@@ -12,10 +12,6 @@ interface AccountService {
 
     fun getAccount(accountId: String): Account
 
-    fun blockAccount(accountId: String): Account
-
-    fun unblockAccount(accountId: String): Account
-
     fun fundAccount(accountId: String, amount: BigDecimal): Account
 
     fun debitAccount(accountId: String, amount: BigDecimal): Account

@@ -1,5 +1,3 @@
-package exceptions
-
 class UnsupportedContentTypeException(val contentType: String) :
         RuntimeException("Content type $contentType not currently supported")
 

@@ -1,6 +1,6 @@
 package components
 
-import exceptions.InvalidParameterException
+import InvalidParameterException
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
 import models.AccountData

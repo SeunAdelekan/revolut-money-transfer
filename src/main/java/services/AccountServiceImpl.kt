@@ -49,7 +49,7 @@ class AccountServiceImpl : AccountService, BaseServiceImpl() {
                 ?: throw InvalidParameterException("account with id $accountId does not exist")
         println(account.balance)
         if (account.balance < amount) {
-            throw exceptions.InvalidParameterException("You do not have enough money to perform this transaction.")
+            throw InvalidParameterException("You do not have enough money to perform this transaction.")
         }
         val debitedAccount = Database.accountStore.compute(accountId) { _, accountRecord ->
             if (accountRecord == null) {
@@ -60,14 +60,6 @@ class AccountServiceImpl : AccountService, BaseServiceImpl() {
             }
         }
         return debitedAccount as Account
-    }
-
-    override fun blockAccount(accountId: String): Account {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun unblockAccount(accountId: String): Account {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun transferFunds(senderAccountId: String, recipientAccountId: String, amount: BigDecimal) {

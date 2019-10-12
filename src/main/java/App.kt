@@ -1,8 +1,5 @@
 import components.ResponseDispatcher
 import controllers.AccountController
-import exceptions.InvalidParameterException
-import exceptions.InvalidUserIdException
-import exceptions.UnsupportedContentTypeException
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.apibuilder.ApiBuilder.*
