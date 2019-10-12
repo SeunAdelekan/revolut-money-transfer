@@ -21,10 +21,12 @@ class CurrencyServiceImpl : CurrencyService, BaseServiceImpl() {
     override fun currencyExists(currencyName: String): Boolean = currencyRepository.findByName(currencyName) != null
 
     override fun getExchangeAmount(amount: BigDecimal, sourceCurrencyName: String, targetCurrencyName: String): BigDecimal {
+        val normalizedAmount = amount.setScale(2, BigDecimal.ROUND_HALF_UP)
+
         println(Pair(sourceCurrencyName, targetCurrencyName))
         return if (sourceCurrencyName == targetCurrencyName) {
-            println(amount)
-            amount
+            println(normalizedAmount)
+            normalizedAmount
         } else {
             Database.currencyStore[sourceCurrencyName]
                     ?: throw IllegalArgumentException("Invalid currency name $sourceCurrencyName")
@@ -38,8 +40,8 @@ class CurrencyServiceImpl : CurrencyService, BaseServiceImpl() {
                                     "source $sourceCurrencyName " +
                                     "and target $targetCurrencyName")
 
-            println(amount.multiply(BigDecimal(exchangeRate.rate)))
-            amount.multiply(BigDecimal(exchangeRate.rate))
+            println(normalizedAmount.multiply(BigDecimal(exchangeRate.rate).setScale(2, BigDecimal.ROUND_HALF_UP)))
+            normalizedAmount.multiply(BigDecimal(exchangeRate.rate).setScale(2, BigDecimal.ROUND_HALF_UP))
         }
     }
 }

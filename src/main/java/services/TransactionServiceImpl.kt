@@ -36,7 +36,7 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
             transactionData: TransactionOperationData): TransferVO {
         val (amount, currency, description) = transactionData
 
-        if (amount <= BigDecimal(0)) {
+        if (amount <= BigDecimal.ZERO) {
             throw InvalidParameterException("Transaction amounts must be greater than 0.0")
         }
         val sourceAccount = accountService.getAccount(sourceAccountId)
