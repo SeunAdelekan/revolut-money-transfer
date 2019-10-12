@@ -5,5 +5,5 @@ import models.entities.ExchangeRate
 
 interface ExchangeRateRepository : BaseRepository<ExchangeRate> {
 
-    fun findBySourceAndTargetCurrencies(sourceCurrencyId: Long, targetCurrencyId: Long): ExchangeRate?
+    fun findBySourceAndTargetCurrencies(sourceCurrencyId: String, targetCurrencyId: String): ExchangeRate?
 }

@@ -33,10 +33,6 @@ internal object AccountController {
         ResponseDispatcher.sendSuccess(ctx, accounts, 200)
     }
 
-    internal val blockAccount = Handler {  }
-
-    internal val unblockAccount = Handler {  }
-
     internal val getAccountTransactions = Handler {  }
 
     internal val fundAccount = Handler { ctx ->
@@ -45,7 +41,13 @@ internal object AccountController {
         ResponseDispatcher.sendSuccess(ctx, account, 200)
     }
 
-    internal val withdrawAccountFunds = Handler {  }
+    internal val withdrawAccountFunds = Handler { ctx ->
 
-    internal val transferFundsToAccount = Handler {  }
+    }
+
+    internal val transferFundsToAccount = Handler { ctx ->
+        val (sourceAccountId, recipientAccountId, transactionData) = parameterValidator.validateFundTransferParams(ctx)
+        val transferData = transactionService.processTransfer(sourceAccountId, recipientAccountId, transactionData)
+        ResponseDispatcher.sendSuccess(ctx, transferData, 200)
+    }
 }

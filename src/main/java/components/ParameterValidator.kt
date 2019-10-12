@@ -28,24 +28,39 @@ class ParameterValidator {
     }
 
     @Throws(BadRequestResponse::class, InvalidParameterException::class)
-    fun validateAccountRetrievalParams(ctx: Context): Long {
-        val accountId = ctx.pathParam<Long>("account_id").get()
+    fun validateAccountRetrievalParams(ctx: Context): String {
+        val accountId = ctx.pathParam<String>("account_id").get()
         val account = accountService.getAccount(accountId)
-                ?: throw InvalidParameterException("An account with id $accountId does not exist.")
         return account.id
     }
 
     @Throws(BadRequestResponse::class)
     fun validateListAccountParams(ctx: Context): Pair<Int, Int> {
-        val page = ctx.queryParam<Int>("page").check({ it > 0 }).getOrNull() ?: 1
-        val limit = ctx.queryParam<Int>("limit").check({ it > 0 }).getOrNull() ?: 50
+        with (ctx) {
+            val page = queryParam<Int>("page").check({ it > 0 }).getOrNull() ?: 1
+            val limit = queryParam<Int>("limit").check({ it > 0 }).getOrNull() ?: 50
 
-        return Pair(page, limit)
+            return Pair(page, limit)
+        }
     }
 
-    fun validateFundAccountParams(ctx: Context): Pair<Long, TransactionOperationData> {
-        val accountId = ctx.pathParam<Long>("account_id").get()
-        val transactionData = ctx.bodyValidator<TransactionOperationData>().get()
-        return Pair(accountId, transactionData)
+    @Throws(BadRequestResponse::class)
+    fun validateFundAccountParams(ctx: Context): Pair<String, TransactionOperationData> {
+        with (ctx) {
+            val accountId = pathParam<String>("account_id").get()
+            val transactionData = bodyValidator<TransactionOperationData>().get()
+            return Pair(accountId, transactionData)
+        }
+    }
+
+    @Throws(BadRequestResponse::class)
+    fun validateFundTransferParams(ctx: Context): Triple<String, String, TransactionOperationData> {
+        with (ctx) {
+            val accountId = pathParam<String>("account_id").get()
+            val recipientAccountId = pathParam<String>("recipient_account_id").get()
+            val transactionData = bodyValidator<TransactionOperationData>().get()
+
+            return Triple(accountId, recipientAccountId, transactionData);
+        }
     }
 }

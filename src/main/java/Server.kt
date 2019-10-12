@@ -7,14 +7,22 @@ import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.apibuilder.ApiBuilder.*
 import models.entities.Currency
+import models.entities.ExchangeRate
 import repositories.CurrencyRepositoryImpl
+import repositories.ExchangeRateRepositoryImpl
 
 fun seedDataStore() {
     val currencyRepository = CurrencyRepositoryImpl()
-    val naira = Currency(1, "NGN")
-    val pound = Currency(2, "GBP")
+    val exchangeRateRepository = ExchangeRateRepositoryImpl()
+    val naira = Currency("NGN")
+    val pound = Currency("GBP")
     currencyRepository.save(naira)
     currencyRepository.save(pound)
+
+    val nairaToPounds = ExchangeRate(naira, pound, 0.0022)
+    val poundsToNaira = ExchangeRate(pound, naira, 456.66)
+    exchangeRateRepository.save(nairaToPounds)
+    exchangeRateRepository.save(poundsToNaira)
 }
 
 
@@ -34,8 +42,6 @@ fun main() {
                 get(AccountController.listAccounts)
                 path(":account_id") {
                     get(AccountController.getAccount)
-                    ApiBuilder.put("/block", AccountController.blockAccount)
-                    ApiBuilder.put("/unblock", AccountController.unblockAccount)
                     ApiBuilder.get("/transactions", AccountController.getAccountTransactions)
                     ApiBuilder.post("/deposits", AccountController.fundAccount)
                     ApiBuilder.post("/withdrawals", AccountController.withdrawAccountFunds)

@@ -4,12 +4,13 @@ import models.entities.Account
 import models.entities.Currency
 import models.entities.ExchangeRate
 import models.entities.Transaction
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 object Database {
 
-    internal val accountStore = ConcurrentHashMap<Long, Account>()
-    internal val transactionStore = ConcurrentHashMap<Long, Transaction>()
+    internal val accountStore = ConcurrentHashMap<String, Account>()
+    internal val transactionStore = ConcurrentHashMap<String, Transaction>()
     internal val currencyStore = ConcurrentHashMap<String, Currency>()
-    internal val exchangeRateStore = ConcurrentHashMap<Pair<Long, Long>, ExchangeRate>()
+    internal val exchangeRateStore = ConcurrentHashMap<Pair<String, String>, ExchangeRate>()
 }

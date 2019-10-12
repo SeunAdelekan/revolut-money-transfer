@@ -1,16 +1,18 @@
 package models.entities
 
+import generateUUID
 import java.math.BigDecimal
 import java.util.*
 
 data class Transaction(
-        val id: Long,
         val amount: BigDecimal,
-        val description: String,
         val balanceBefore: BigDecimal,
         val balanceAfter: BigDecimal,
         val transactionReference: String,
         val sessionReference: String,
-        val createdAt: Date,
-        val updatedAt: Date
-)
+        val createdAt: Date = Date(),
+        val updatedAt: Date = Date(),
+        val description: String? = null
+) {
+    val id: String = generateUUID()
+}

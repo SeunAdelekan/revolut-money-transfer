@@ -10,13 +10,15 @@ interface AccountService {
 
     fun getAccounts(page: Int = 1, limit: Int = 50): List<Account>
 
-    fun getAccount(accountId: Long): Account
+    fun getAccount(accountId: String): Account
 
-    fun blockAccount(accountId: Long): Account
+    fun blockAccount(accountId: String): Account
 
-    fun unblockAccount(accountId: Long): Account
+    fun unblockAccount(accountId: String): Account
 
-    fun fundAccount(accountId: Long, amount: BigDecimal): Account
+    fun fundAccount(accountId: String, amount: BigDecimal): Account
 
-    fun transferFunds(senderAccountId: Long, recipientAccountId: Long, amount: BigDecimal)
+    fun debitAccount(accountId: String, amount: BigDecimal): Account
+
+    fun transferFunds(senderAccountId: String, recipientAccountId: String, amount: BigDecimal)
 }

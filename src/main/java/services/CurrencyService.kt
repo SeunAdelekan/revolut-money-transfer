@@ -12,5 +12,5 @@ interface CurrencyService {
 
     fun currencyExists(currencyName: String): Boolean
 
-    fun getExchangeAmount(amount: BigDecimal, sourceCurrency: String, targetCurrency: String): BigDecimal
+    fun getExchangeAmount(amount: BigDecimal, sourceCurrencyName: String, targetCurrencyName: String): BigDecimal
 }

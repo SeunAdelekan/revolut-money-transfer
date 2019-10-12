@@ -1,16 +1,31 @@
 package services
 
 import models.TransactionOperationData
+import models.TransferVO
 import models.entities.Account
 import models.entities.Transaction
+import java.math.BigDecimal
 
 interface TransactionService {
 
-    fun processDeposit(accountId: Long, transactionData: TransactionOperationData): Account
+    fun processDeposit(accountId: String, transactionData: TransactionOperationData): Account
 
-    fun executeDebit(account: Account, transactionData: TransactionOperationData): Transaction
+    fun processTransfer(
+            sourceAccountId: String,
+            recipientAccountId: String,
+            transactionData: TransactionOperationData): TransferVO
 
-    fun executeCredit(account: Account, transactionData: TransactionOperationData): Transaction
+    fun executeDebit(
+            accountId: String,
+            amount: BigDecimal,
+            sessionReference: String,
+            description: String? = null): Pair<Account, Transaction>
 
-    fun getTransactions(accountId: Long, page: Long = 1, limit: Long = 50)
+    fun executeCredit(
+            accountId: String,
+            amount: BigDecimal,
+            sessionReference: String,
+            description: String? = null): Pair<Account, Transaction>
+
+    fun getTransactions(accountId: String, page: Long = 1, limit: Long = 50)
 }
