@@ -3,7 +3,6 @@ package models.entities
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import generateUUID
 import serializers.DateSerializer
-import java.time.Instant
 import java.util.*
 
 data class ExchangeRate(
