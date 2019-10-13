@@ -1,5 +1,6 @@
 package models.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import components.Database
 import generateUUID
@@ -20,6 +21,9 @@ data class Account(
         val updatedAt: Date = Date.from(Instant.now())
 ) {
         val id: String = generateUUID()
+
         lateinit var currency: Currency
+
+        @JsonIgnore
         val transactions: MutableList<Transaction> = Collections.synchronizedList(LinkedList<Transaction>())
 }

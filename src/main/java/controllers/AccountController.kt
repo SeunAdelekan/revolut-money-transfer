@@ -3,7 +3,6 @@ package controllers
 import components.ParameterValidator
 import components.ResponseDispatcher
 import io.javalin.http.Handler
-import models.entities.Account
 import services.AccountService
 import services.AccountServiceImpl
 import services.TransactionService
@@ -23,7 +22,7 @@ internal object AccountController {
 
     internal val getAccount = Handler { ctx ->
         val accountId = parameterValidator.validateAccountRetrievalParams(ctx)
-        val account = accountService.getAccount(accountId) as Account
+        val account = accountService.getAccount(accountId)
         ResponseDispatcher.sendSuccess(ctx, account, 200)
     }
 
@@ -33,7 +32,11 @@ internal object AccountController {
         ResponseDispatcher.sendSuccess(ctx, accounts, 200)
     }
 
-    internal val getAccountTransactions = Handler {  }
+    internal val getAccountTransactions = Handler { ctx ->
+        val (accountId, page, limit) = parameterValidator.validateTransactionRetrievalParams(ctx)
+        val transactions = accountService.getAccountTransactions(accountId, page, limit)
+        ResponseDispatcher.sendSuccess(ctx, transactions, 200)
+    }
 
     internal val fundAccount = Handler { ctx ->
         val (accountId, transactionData) = parameterValidator.validateFundAccountParams(ctx)
@@ -46,8 +49,12 @@ internal object AccountController {
     }
 
     internal val transferFundsToAccount = Handler { ctx ->
-        val (sourceAccountId, recipientAccountId, transactionData) = parameterValidator.validateFundTransferParams(ctx)
-        val transferData = transactionService.processTransfer(sourceAccountId, recipientAccountId, transactionData)
+        val (sourceAccountId, recipientAccountId, transactionData) =
+                parameterValidator.validateFundTransferParams(ctx)
+        val transferData = transactionService.processTransfer(
+                sourceAccountId,
+                recipientAccountId,
+                transactionData)
         ResponseDispatcher.sendSuccess(ctx, transferData, 200)
     }
 }

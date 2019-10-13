@@ -27,5 +27,5 @@ interface TransactionService {
             sessionReference: String,
             description: String? = null): Pair<Account, Transaction>
 
-    fun getTransactions(accountId: String, page: Long = 1, limit: Long = 50)
+    fun getTransactions(accountId: String, page: Int = 1, limit: Int = 50)
 }

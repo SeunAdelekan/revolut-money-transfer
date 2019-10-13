@@ -63,4 +63,12 @@ class ParameterValidator {
             return Triple(accountId, recipientAccountId, transactionData);
         }
     }
+
+    @Throws(BadRequestResponse::class, InvalidParameterException::class)
+    fun validateTransactionRetrievalParams(ctx: Context): Triple<String, Int, Int> {
+        val accountId = ctx.pathParam<String>("account_id").get()
+        val page = ctx.queryParam<Int>("page").check({ it > 0 }).getOrNull() ?: 1
+        val limit = ctx.queryParam<Int>("limit").check({ it > 0 }).getOrNull() ?: 50
+        return Triple(accountId, page, limit)
+    }
 }

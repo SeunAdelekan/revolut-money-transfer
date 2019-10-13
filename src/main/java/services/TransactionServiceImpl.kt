@@ -1,6 +1,8 @@
 package services
 
 import InvalidParameterException
+import TransactionType
+import components.Database
 import generateUUID
 import models.TransactionOperationData
 import models.TransferVO
@@ -8,6 +10,7 @@ import models.entities.Account
 import models.entities.Transaction
 import repositories.TransactionRepository
 import repositories.TransactionRepositoryImpl
+import java.lang.IllegalArgumentException
 import java.math.BigDecimal
 
 internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
@@ -59,14 +62,25 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
             sessionReference: String,
             description: String?): Pair<Account, Transaction> {
         val transactionReference = generateTransactionReference()
-        val debitedAccount = accountService.debitAccount(accountId, amount)
-        val transaction = Transaction(
-                amount = amount,
-                balanceBefore = debitedAccount.balance  + amount,
-                balanceAfter = debitedAccount.balance,
-                description = description,
-                sessionReference = sessionReference,
-                transactionReference = transactionReference)
+        val transaction = buildTransaction(
+                amount,
+                transactionReference,
+                sessionReference,
+                TransactionType.DEBIT,
+                description)
+
+        val debitedAccount = Database.accountStore.compute(accountId) { _, accountRecord ->
+            if (accountRecord == null) {
+                accountRecord
+            } else {
+                accountRecord.balance -= amount
+                transaction.balanceBefore = accountRecord.balance + amount
+                transaction.balanceAfter = accountRecord.balance
+                accountRecord.transactions.add(transaction)
+                accountRecord
+            }
+        } ?: throw IllegalArgumentException("account with id $accountId does not exist")
+
         return Pair(debitedAccount, transaction)
     }
 
@@ -77,19 +91,37 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
             sessionReference: String,
             description: String?): Pair<Account, Transaction> {
         val transactionReference = generateTransactionReference()
+        val transaction = buildTransaction(
+                amount,
+                transactionReference,
+                sessionReference,
+                TransactionType.CREDIT,
+                description)
 
-        val creditedAccount = accountService.fundAccount(accountId, amount)
-        val transaction = Transaction(
-                amount = amount,
-                balanceBefore = creditedAccount.balance  + amount,
-                balanceAfter = creditedAccount.balance,
-                description = description,
-                sessionReference = sessionReference,
-                transactionReference = transactionReference)
+        val creditedAccount = Database.accountStore.compute(accountId) { _, accountRecord ->
+            if (accountRecord == null) {
+                accountRecord
+            } else {
+                accountRecord.balance += amount
+                transaction.balanceBefore = accountRecord.balance - amount
+                transaction.balanceAfter = accountRecord.balance
+                accountRecord.transactions.add(transaction)
+                accountRecord
+            }
+        } ?: throw IllegalArgumentException("account with id $accountId does not exist")
+
         return Pair(creditedAccount, transaction)
     }
 
-    override fun getTransactions(accountId: String, page: Long, limit: Long) {
+    private fun buildTransaction(
+            amount: BigDecimal,
+            transactionReference: String,
+            sessionReference: String,
+            type: TransactionType,
+            description: String?): Transaction
+            = Transaction(amount, transactionReference, sessionReference, type, description)
+
+    override fun getTransactions(accountId: String, page: Int, limit: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

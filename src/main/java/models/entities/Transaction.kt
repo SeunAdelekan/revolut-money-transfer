@@ -1,5 +1,6 @@
 package models.entities
 
+import TransactionType
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import generateUUID
 import serializers.BigDecimalSerializer
@@ -10,15 +11,22 @@ import java.util.*
 data class Transaction(
         @JsonSerialize(using = BigDecimalSerializer::class)
         val amount: BigDecimal,
-        val balanceBefore: BigDecimal,
-        val balanceAfter: BigDecimal,
         val transactionReference: String,
         val sessionReference: String,
-        @JsonSerialize(using = DateSerializer::class)
-        val createdAt: Date = Date(),
-        @JsonSerialize(using = DateSerializer::class)
-        val updatedAt: Date = Date(),
+        val type: TransactionType,
         val description: String? = null
 ) {
-    val id: String = generateUUID()
+        val id: String = generateUUID()
+
+        @JsonSerialize(using = BigDecimalSerializer::class)
+        lateinit var balanceBefore: BigDecimal
+
+        @JsonSerialize(using = BigDecimalSerializer::class)
+        lateinit var balanceAfter: BigDecimal
+
+        @JsonSerialize(using = DateSerializer::class)
+        val createdAt: Date = Date()
+
+        @JsonSerialize(using = DateSerializer::class)
+        val updatedAt: Date = Date()
 }

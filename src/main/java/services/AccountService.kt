@@ -2,6 +2,7 @@ package services
 
 import models.AccountData
 import models.entities.Account
+import models.entities.Transaction
 import java.math.BigDecimal
 
 interface AccountService {
@@ -17,4 +18,6 @@ interface AccountService {
     fun debitAccount(accountId: String, amount: BigDecimal): Account
 
     fun transferFunds(senderAccountId: String, recipientAccountId: String, amount: BigDecimal)
+
+    fun getAccountTransactions(accountId: String, page: Int = 1, limit: Int = 50): List<Transaction>
 }
