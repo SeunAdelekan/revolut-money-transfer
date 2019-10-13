@@ -26,6 +26,4 @@ interface TransactionService {
             amount: BigDecimal,
             sessionReference: String,
             description: String? = null): Pair<Account, Transaction>
-
-    fun getTransactions(accountId: String, page: Int = 1, limit: Int = 50)
 }

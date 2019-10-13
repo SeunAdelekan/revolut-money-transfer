@@ -50,17 +50,22 @@ fun main() {
         exception(UnsupportedContentTypeException::class.java) { error, ctx ->
             println(error.message)
             ResponseDispatcher.sendError(
-                    ctx, "Unsupported HTTP content type", errorCode = "1001")
+                    ctx, "Unsupported HTTP content type", errorCode = "1000")
         }
 
         exception(InvalidUserIdException::class.java) { error, ctx ->
             ResponseDispatcher.sendError(
-                    ctx, "A user with id ${error.userId} does not exist.", "1000")
+                    ctx, "A user with id ${error.userId} does not exist.", "1001")
         }
 
         exception(InvalidParameterException::class.java) { error, ctx ->
             ResponseDispatcher.sendError(
-                    ctx, error.message as String, "1000")
+                    ctx, error.message as String, "1002")
+        }
+
+        exception(InsufficientBalanceException::class.java) { error, ctx ->
+            ResponseDispatcher.sendError(
+                    ctx, error.message as String, "1003")
         }
     }
 }

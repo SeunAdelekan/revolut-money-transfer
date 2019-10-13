@@ -1,5 +1,6 @@
 package services
 
+import InsufficientBalanceException
 import InvalidParameterException
 import TransactionType
 import components.Database
@@ -8,16 +9,12 @@ import models.TransactionOperationData
 import models.TransferVO
 import models.entities.Account
 import models.entities.Transaction
-import repositories.TransactionRepository
-import repositories.TransactionRepositoryImpl
-import java.lang.IllegalArgumentException
 import java.math.BigDecimal
 
 internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
 
     private val accountService: AccountService = AccountServiceImpl()
     private val currencyService: CurrencyService = CurrencyServiceImpl()
-    private val transactionRepository: TransactionRepository = TransactionRepositoryImpl()
 
     override fun processDeposit(accountId: String, transactionData: TransactionOperationData): Account {
         var account = accountService.getAccount(accountId)
@@ -73,6 +70,9 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
             if (accountRecord == null) {
                 accountRecord
             } else {
+                if (accountRecord.balance < amount) {
+                    throw InsufficientBalanceException(amount)
+                }
                 accountRecord.balance -= amount
                 transaction.balanceBefore = accountRecord.balance + amount
                 transaction.balanceAfter = accountRecord.balance
@@ -120,10 +120,6 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
             type: TransactionType,
             description: String?): Transaction
             = Transaction(amount, transactionReference, sessionReference, type, description)
-
-    override fun getTransactions(accountId: String, page: Int, limit: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     private fun generateSessionReference() = "SESSION-${generateUUID()}}"
 

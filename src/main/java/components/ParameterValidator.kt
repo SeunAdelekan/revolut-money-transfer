@@ -18,8 +18,8 @@ class ParameterValidator {
         val sanitizedAccountData = ctx.bodyValidator<AccountData>().get()
         val (accountName, currency) = sanitizedAccountData
 
-        if (accountName.length < 5) {
-            throw BadRequestResponse("Invalid accountName")
+        if (accountName.length < 3) {
+            throw BadRequestResponse("Account name must be a minimum of 3 characters in length.")
         }
         if (!currencyService.currencyExists(currency)) {
             throw InvalidParameterException("Invalid currencyId $currency")
