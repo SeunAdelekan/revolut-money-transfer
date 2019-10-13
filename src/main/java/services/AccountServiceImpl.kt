@@ -30,35 +30,6 @@ class AccountServiceImpl : AccountService, BaseServiceImpl() {
                 ?: throw InvalidParameterException("account with id $accountId does not exist")
     }
 
-    @Throws(IllegalArgumentException::class)
-    override fun fundAccount(accountId: String, amount: BigDecimal): Account {
-        return Database.accountStore.compute(accountId) { _, accountRecord ->
-            if (accountRecord == null) {
-                accountRecord
-            } else {
-                accountRecord.balance += amount
-                accountRecord
-            }
-        } ?: throw IllegalArgumentException("account with id $accountId does not exist")
-    }
-
-    override fun debitAccount(accountId: String, amount: BigDecimal): Account {
-        val account = getAccount(accountId)
-
-        if (account.balance < amount) {
-            throw InvalidParameterException("You do not have enough money to perform this transaction.")
-        }
-        val debitedAccount = Database.accountStore.compute(accountId) { _, accountRecord ->
-            if (accountRecord == null) {
-                accountRecord
-            } else {
-                accountRecord.balance -= amount
-                accountRecord
-            }
-        }
-        return debitedAccount as Account
-    }
-
     override fun transferFunds(senderAccountId: String, recipientAccountId: String, amount: BigDecimal) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

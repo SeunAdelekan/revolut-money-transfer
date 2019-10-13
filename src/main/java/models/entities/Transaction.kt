@@ -1,5 +1,6 @@
 package models.entities
 
+import TransactionCategory
 import TransactionType
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import generateUUID
@@ -14,6 +15,7 @@ data class Transaction(
         val transactionReference: String,
         val sessionReference: String,
         val type: TransactionType,
+        val category: TransactionCategory,
         val description: String? = null
 ) {
         val id: String = generateUUID()

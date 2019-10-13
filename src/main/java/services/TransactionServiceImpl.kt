@@ -2,6 +2,7 @@ package services
 
 import InsufficientBalanceException
 import InvalidParameterException
+import TransactionCategory
 import TransactionType
 import components.Database
 import generateUUID
@@ -20,11 +21,30 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
         var account = accountService.getAccount(accountId)
         val (amount, currency) = transactionData
 
-        if (amount <= BigDecimal(0)) {
+        if (amount <= BigDecimal.ZERO) {
             throw InvalidParameterException("Transaction amounts must be greater than 0.0")
         }
         val convertedAmount = currencyService.getExchangeAmount(amount, currency, account.currency.name)
-        account = accountService.fundAccount(account.id, convertedAmount)
+
+        val transaction = buildTransaction(
+                convertedAmount,
+                generateTransactionReference(),
+                generateSessionReference(),
+                TransactionType.CREDIT,
+                TransactionCategory.ACCOUNT_FUNDING)
+
+        account = Database.accountStore.compute(accountId) { _, accountRecord ->
+            if (accountRecord == null) {
+                accountRecord
+            } else {
+                accountRecord.balance += convertedAmount
+                transaction.balanceBefore = accountRecord.balance - convertedAmount
+                transaction.balanceAfter = accountRecord.balance
+                accountRecord.transactions.add(transaction)
+                accountRecord
+            }
+        } ?: throw IllegalArgumentException("account with id $accountId does not exist")
+
         return account
     }
 
@@ -38,7 +58,6 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
             throw InvalidParameterException("Transaction amounts must be greater than 0.0")
         }
         val sourceAccount = accountService.getAccount(sourceAccountId)
-
         val sourceDebitAmount = currencyService.getExchangeAmount(amount, currency, sourceAccount.currency.name)
 
         if (sourceAccount.balance < sourceDebitAmount) {
@@ -64,6 +83,7 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
                 transactionReference,
                 sessionReference,
                 TransactionType.DEBIT,
+                TransactionCategory.BANK_TRANSFER,
                 description)
 
         val debitedAccount = Database.accountStore.compute(accountId) { _, accountRecord ->
@@ -96,6 +116,7 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
                 transactionReference,
                 sessionReference,
                 TransactionType.CREDIT,
+                TransactionCategory.BANK_TRANSFER,
                 description)
 
         val creditedAccount = Database.accountStore.compute(accountId) { _, accountRecord ->
@@ -118,8 +139,9 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
             transactionReference: String,
             sessionReference: String,
             type: TransactionType,
-            description: String?): Transaction
-            = Transaction(amount, transactionReference, sessionReference, type, description)
+            category: TransactionCategory,
+            description: String? = null): Transaction
+            = Transaction(amount, transactionReference, sessionReference, type, category, description)
 
     private fun generateSessionReference() = "SESSION-${generateUUID()}}"
 
