@@ -1,15 +1,18 @@
 package services
 
-import components.Database
+import components.Datastore
 import models.CurrencyData
 import models.entities.Currency
 import repositories.CurrencyRepository
 import repositories.CurrencyRepositoryImpl
+import repositories.ExchangeRateRepository
+import repositories.ExchangeRateRepositoryImpl
 import java.math.BigDecimal
 
 class CurrencyServiceImpl : CurrencyService, BaseServiceImpl() {
 
     private val currencyRepository: CurrencyRepository = CurrencyRepositoryImpl()
+    private val exchangeRateRepository: ExchangeRateRepository = ExchangeRateRepositoryImpl()
 
     override fun createCurrency(currencyDetails: CurrencyData): Currency {
         val currency = Currency(name = currencyDetails.name)
@@ -28,13 +31,13 @@ class CurrencyServiceImpl : CurrencyService, BaseServiceImpl() {
             println(normalizedAmount)
             normalizedAmount
         } else {
-            Database.currencyStore[sourceCurrencyName]
+            Datastore.currencyStore[sourceCurrencyName]
                     ?: throw IllegalArgumentException("Invalid currency name $sourceCurrencyName")
-            Database.currencyStore[targetCurrencyName]
+            Datastore.currencyStore[targetCurrencyName]
                     ?: throw IllegalArgumentException("Invalid currency name $targetCurrencyName")
 
-            val exchangeRateKey = Pair(sourceCurrencyName, targetCurrencyName)
-            val exchangeRate = Database.exchangeRateStore[exchangeRateKey]
+            val exchangeRate = exchangeRateRepository.findBySourceAndTargetCurrencies(
+                    sourceCurrencyName, targetCurrencyName)
                     ?: throw IllegalArgumentException(
                             "Exchange rate not defined for currency " +
                                     "source $sourceCurrencyName " +

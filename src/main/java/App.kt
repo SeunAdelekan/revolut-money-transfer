@@ -3,28 +3,11 @@ import controllers.AccountController
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.apibuilder.ApiBuilder.*
-import models.entities.Currency
-import models.entities.ExchangeRate
-import repositories.CurrencyRepositoryImpl
-import repositories.ExchangeRateRepositoryImpl
-
-fun seedDataStore() {
-    val currencyRepository = CurrencyRepositoryImpl()
-    val exchangeRateRepository = ExchangeRateRepositoryImpl()
-    val naira = Currency("NGN")
-    val pound = Currency("GBP")
-    currencyRepository.save(naira)
-    currencyRepository.save(pound)
-
-    val nairaToPounds = ExchangeRate(naira, pound, 0.0022)
-    val poundsToNaira = ExchangeRate(pound, naira, 456.66)
-    exchangeRateRepository.save(nairaToPounds)
-    exchangeRateRepository.save(poundsToNaira)
-}
-
 
 fun main() {
-    seedDataStore()
+    seedCurrencies()
+    seedExchangeRates()
+
     val app = Javalin.create().start(7000)
 
     with (app) {

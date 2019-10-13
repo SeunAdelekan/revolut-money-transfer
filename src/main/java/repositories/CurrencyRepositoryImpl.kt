@@ -1,14 +1,16 @@
 package repositories
 
-import components.Database
+import components.Datastore
 import models.entities.Currency
 
 class CurrencyRepositoryImpl : CurrencyRepository {
 
-    override fun findByName(name: String): Currency? = Database.currencyStore[name]
+    override fun findByName(name: String): Currency? = Datastore.currencyStore[name]
 
     override fun save(entity: Currency): Currency {
-        Database.currencyStore[entity.name] = entity
+        Datastore.currencyStore[entity.name] = entity
         return entity
     }
+
+    override fun countRecords(): Int = Datastore.currencyStore.size
 }

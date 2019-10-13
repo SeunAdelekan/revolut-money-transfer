@@ -7,7 +7,7 @@ import serializers.DateSerializer
 import java.util.*
 
 data class Currency(
-        val name: String = "",
+        val name: String,
         @JsonIgnore
         @JsonSerialize(using = DateSerializer::class)
         val createdAt: Date = Date(),

@@ -4,18 +4,21 @@ import InsufficientBalanceException
 import InvalidParameterException
 import TransactionCategory
 import TransactionType
-import components.Database
+import components.Datastore
 import generateUUID
 import models.TransactionOperationData
 import models.TransferVO
 import models.entities.Account
 import models.entities.Transaction
+import repositories.TransactionRepository
+import repositories.TransactionRepositoryImpl
 import java.math.BigDecimal
 
 internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
 
     private val accountService: AccountService = AccountServiceImpl()
     private val currencyService: CurrencyService = CurrencyServiceImpl()
+    private val transactionRepository: TransactionRepository = TransactionRepositoryImpl()
 
     override fun processDeposit(accountId: String, transactionData: TransactionOperationData): Account {
         var account = accountService.getAccount(accountId)
@@ -33,14 +36,14 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
                 TransactionType.CREDIT,
                 TransactionCategory.ACCOUNT_FUNDING)
 
-        account = Database.accountStore.compute(accountId) { _, accountRecord ->
+        account = Datastore.accountStore.compute(accountId) { _, accountRecord ->
             if (accountRecord == null) {
                 accountRecord
             } else {
                 accountRecord.balance += convertedAmount
                 transaction.balanceBefore = accountRecord.balance - convertedAmount
                 transaction.balanceAfter = accountRecord.balance
-                accountRecord.transactions.add(transaction)
+                accountRecord.transactions.add(transactionRepository.save(transaction))
                 accountRecord
             }
         } ?: throw IllegalArgumentException("account with id $accountId does not exist")
@@ -86,7 +89,7 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
                 TransactionCategory.BANK_TRANSFER,
                 description)
 
-        val debitedAccount = Database.accountStore.compute(accountId) { _, accountRecord ->
+        val debitedAccount = Datastore.accountStore.compute(accountId) { _, accountRecord ->
             if (accountRecord == null) {
                 accountRecord
             } else {
@@ -96,7 +99,7 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
                 accountRecord.balance -= amount
                 transaction.balanceBefore = accountRecord.balance + amount
                 transaction.balanceAfter = accountRecord.balance
-                accountRecord.transactions.add(transaction)
+                accountRecord.transactions.add(transactionRepository.save(transaction))
                 accountRecord
             }
         } ?: throw IllegalArgumentException("account with id $accountId does not exist")
@@ -119,14 +122,14 @@ internal class TransactionServiceImpl : TransactionService, BaseServiceImpl() {
                 TransactionCategory.BANK_TRANSFER,
                 description)
 
-        val creditedAccount = Database.accountStore.compute(accountId) { _, accountRecord ->
+        val creditedAccount = Datastore.accountStore.compute(accountId) { _, accountRecord ->
             if (accountRecord == null) {
                 accountRecord
             } else {
                 accountRecord.balance += amount
                 transaction.balanceBefore = accountRecord.balance - amount
                 transaction.balanceAfter = accountRecord.balance
-                accountRecord.transactions.add(transaction)
+                accountRecord.transactions.add(transactionRepository.save(transaction))
                 accountRecord
             }
         } ?: throw IllegalArgumentException("account with id $accountId does not exist")

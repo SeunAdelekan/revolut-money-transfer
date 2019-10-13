@@ -1,23 +1,17 @@
 package repositories
 
-import components.Database
+import components.Datastore
 import models.entities.Transaction
 
 
-class TransactionRepositoryImpl : TransactionRepository, BaseRepositoryImpl<Transaction>() {
+class TransactionRepositoryImpl : TransactionRepository {
 
-    override fun findById(id: String): Transaction? = Database.transactionStore[id]
-
-    override fun findByPage(page: Int, limit: Int): List<Transaction> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun findById(id: String): Transaction? = Datastore.transactionStore[id]
 
     override fun save(entity: Transaction): Transaction {
-        Database.transactionStore[entity.id] = entity
+        Datastore.transactionStore[entity.id] = entity
         return entity
     }
 
-    override fun findByAccountId(accountId: String, page: Int, limit: Int): List<Transaction> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun countRecords(): Int = Datastore.transactionStore.size
 }

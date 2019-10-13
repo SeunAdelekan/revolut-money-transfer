@@ -1,18 +1,21 @@
 package repositories
 
-import components.Database
+import components.Datastore
 import models.entities.ExchangeRate
+import javax.xml.crypto.Data
 
 class ExchangeRateRepositoryImpl : ExchangeRateRepository {
 
-    override fun findBySourceAndTargetCurrencies(sourceCurrencyId: String, targetCurrencyId: String): ExchangeRate? {
-        val key = Pair(sourceCurrencyId, targetCurrencyId)
-        return Database.exchangeRateStore[key]
+    override fun findBySourceAndTargetCurrencies(sourceCurrencyName: String, targetCurrencyName: String): ExchangeRate? {
+        val key = Pair(sourceCurrencyName, targetCurrencyName)
+        return Datastore.exchangeRateStore[key]
     }
 
     override fun save(entity: ExchangeRate): ExchangeRate {
         val key = Pair(entity.sourceCurrency.name, entity.targetCurrency.name)
-        Database.exchangeRateStore[key] = entity
+        Datastore.exchangeRateStore[key] = entity
         return entity
     }
+
+    override fun countRecords(): Int = Datastore.exchangeRateStore.size
 }
