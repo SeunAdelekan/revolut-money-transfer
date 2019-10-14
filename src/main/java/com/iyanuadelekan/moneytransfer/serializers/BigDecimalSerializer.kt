@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializerProvider
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.DecimalFormat
 
 /**
@@ -14,7 +15,7 @@ class BigDecimalSerializer : JsonSerializer<BigDecimal>() {
     override fun serialize(decimal: BigDecimal, generator: JsonGenerator, provider: SerializerProvider) {
         val serializedDecimal = DecimalFormat("#.##").apply {
             minimumFractionDigits = 2
-        }.format(decimal.setScale(2, BigDecimal.ROUND_HALF_UP))
+        }.format(decimal.setScale(2, RoundingMode.HALF_UP))
 
         generator.writeString(serializedDecimal)
     }

@@ -8,6 +8,7 @@ import com.iyanuadelekan.moneytransfer.repositories.CurrencyRepositoryImpl
 import com.iyanuadelekan.moneytransfer.repositories.ExchangeRateRepository
 import com.iyanuadelekan.moneytransfer.repositories.ExchangeRateRepositoryImpl
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 class CurrencyServiceImpl : CurrencyService {
 
@@ -24,11 +25,8 @@ class CurrencyServiceImpl : CurrencyService {
     override fun currencyExists(currencyName: String): Boolean = currencyRepository.findByName(currencyName) != null
 
     override fun getExchangeAmount(amount: BigDecimal, sourceCurrencyName: String, targetCurrencyName: String): BigDecimal {
-        val normalizedAmount = amount.setScale(2, BigDecimal.ROUND_HALF_UP)
-
-        println(Pair(sourceCurrencyName, targetCurrencyName))
+        val normalizedAmount = amount.setScale(2, RoundingMode.HALF_UP)
         return if (sourceCurrencyName == targetCurrencyName) {
-            println(normalizedAmount)
             normalizedAmount
         } else {
             Datastore.currencyStore[sourceCurrencyName]
@@ -42,9 +40,7 @@ class CurrencyServiceImpl : CurrencyService {
                             "Exchange rate not defined for currency " +
                                     "source $sourceCurrencyName " +
                                     "and target $targetCurrencyName")
-
-            println(normalizedAmount.multiply(BigDecimal(exchangeRate.rate).setScale(2, BigDecimal.ROUND_HALF_UP)))
-            normalizedAmount.multiply(BigDecimal(exchangeRate.rate).setScale(2, BigDecimal.ROUND_HALF_UP))
+            normalizedAmount.multiply(BigDecimal(exchangeRate.rate)).setScale(2, RoundingMode.HALF_UP)
         }
     }
 }
