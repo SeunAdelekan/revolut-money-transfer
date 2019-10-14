@@ -29,10 +29,6 @@ class AccountServiceImpl : AccountService, BaseServiceImpl() {
                 ?: throw InvalidParameterException("account with id $accountId does not exist")
     }
 
-    override fun transferFunds(senderAccountId: String, recipientAccountId: String, amount: BigDecimal) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun getAccountTransactions(accountId: String, page: Int, limit: Int): List<Transaction>
             = getAccount(accountId).transactions.getPage(page, limit)
 }

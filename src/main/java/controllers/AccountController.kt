@@ -44,10 +44,6 @@ internal object AccountController {
         ResponseDispatcher.sendSuccess(ctx, account, 200)
     }
 
-    internal val withdrawAccountFunds = Handler { ctx ->
-
-    }
-
     internal val transferFundsToAccount = Handler { ctx ->
         val (sourceAccountId, recipientAccountId, transactionData) =
                 parameterValidator.validateFundTransferParams(ctx)

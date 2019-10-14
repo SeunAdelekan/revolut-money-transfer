@@ -24,7 +24,6 @@ internal fun startApp(port: Int = 7000): Javalin {
                     get(AccountController.getAccount)
                     ApiBuilder.get("/transactions", AccountController.getAccountTransactions)
                     ApiBuilder.post("/deposits", AccountController.fundAccount)
-                    ApiBuilder.post("/withdrawals", AccountController.withdrawAccountFunds)
                     ApiBuilder.post("/transfers/:recipient_account_id", AccountController.transferFundsToAccount)
                 }
             }
