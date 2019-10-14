@@ -1,11 +1,11 @@
 package com.iyanuadelekan.unit.repositories
 
-import components.Datastore
-import generateUUID
-import models.entities.Account
+import com.iyanuadelekan.moneytransfer.components.Datastore
+import com.iyanuadelekan.moneytransfer.generateUUID
+import com.iyanuadelekan.moneytransfer.models.entities.Account
 import org.junit.Before
 import org.junit.Test
-import repositories.AccountRepositoryImpl
+import com.iyanuadelekan.moneytransfer.repositories.AccountRepositoryImpl
 import kotlin.test.assertEquals
 
 class AccountRepositoryTest {

@@ -1,10 +1,10 @@
 package com.iyanuadelekan.unit.repositories
 
-import components.Datastore
-import models.entities.Currency
+import com.iyanuadelekan.moneytransfer.components.Datastore
+import com.iyanuadelekan.moneytransfer.models.entities.Currency
 import org.junit.Before
 import org.junit.Test
-import repositories.CurrencyRepositoryImpl
+import com.iyanuadelekan.moneytransfer.repositories.CurrencyRepositoryImpl
 import kotlin.test.assertEquals
 
 class CurrencyRepositoryTest {

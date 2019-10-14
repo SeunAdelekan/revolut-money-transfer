@@ -1,13 +1,13 @@
 package com.iyanuadelekan.unit.repositories
 
-import components.Datastore
-import models.entities.Currency
-import models.entities.ExchangeRate
+import com.iyanuadelekan.moneytransfer.components.Datastore
+import com.iyanuadelekan.moneytransfer.models.entities.Currency
+import com.iyanuadelekan.moneytransfer.models.entities.ExchangeRate
 import org.junit.Before
 import org.junit.Test
-import repositories.CurrencyRepositoryImpl
-import repositories.ExchangeRateRepositoryImpl
-import seedCurrencies
+import com.iyanuadelekan.moneytransfer.repositories.CurrencyRepositoryImpl
+import com.iyanuadelekan.moneytransfer.repositories.ExchangeRateRepositoryImpl
+import com.iyanuadelekan.moneytransfer.seedCurrencies
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 

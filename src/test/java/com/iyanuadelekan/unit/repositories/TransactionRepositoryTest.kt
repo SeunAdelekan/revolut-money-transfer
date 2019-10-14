@@ -1,11 +1,13 @@
 package com.iyanuadelekan.unit.repositories
 
-import components.Datastore
-import generateUUID
-import models.entities.Transaction
+import com.iyanuadelekan.moneytransfer.TransactionCategory
+import com.iyanuadelekan.moneytransfer.TransactionType
+import com.iyanuadelekan.moneytransfer.components.Datastore
+import com.iyanuadelekan.moneytransfer.generateUUID
+import com.iyanuadelekan.moneytransfer.models.entities.Transaction
 import org.junit.Before
 import org.junit.Test
-import repositories.TransactionRepositoryImpl
+import com.iyanuadelekan.moneytransfer.repositories.TransactionRepositoryImpl
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 
