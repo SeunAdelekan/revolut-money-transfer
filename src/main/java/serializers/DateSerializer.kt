@@ -9,7 +9,7 @@ import java.util.*
 
 class DateSerializer : JsonSerializer<Date>() {
 
-    private val dateFormatter = SimpleDateFormat("dd-MM-yyyy hh:mm:ss")
+    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss")
 
     @Throws(IOException::class)
     override fun serialize(date: Date, generator: JsonGenerator, provider: SerializerProvider) {

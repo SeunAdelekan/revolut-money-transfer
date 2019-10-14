@@ -19,10 +19,10 @@ class ParameterValidator {
         val (accountName, currency) = sanitizedAccountData
 
         if (accountName.length < 3) {
-            throw BadRequestResponse("Account name must be a minimum of 3 characters in length.")
+            throw InvalidParameterException("Account name must be a minimum of 3 characters in length.")
         }
         if (!currencyService.currencyExists(currency)) {
-            throw InvalidParameterException("Invalid currencyId $currency")
+            throw InvalidParameterException("That currency is not supported at the moment")
         }
         return  sanitizedAccountData;
     }

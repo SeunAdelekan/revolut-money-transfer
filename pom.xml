@@ -14,6 +14,7 @@
         <javalin.version>3.5.0</javalin.version>
         <jackson.version>2.10.0.pr1</jackson.version>
         <junit.version>4.12</junit.version>
+        <unirest.version>3.1.00</unirest.version>
         <scope.test>test</scope.test>
     </properties>
 
@@ -54,6 +55,17 @@
             <artifactId>kotlin-test-junit</artifactId>
             <version>${kotlin.version}</version>
             <scope>${scope.test}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>${unirest.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

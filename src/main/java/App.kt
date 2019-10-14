@@ -4,11 +4,11 @@ import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.apibuilder.ApiBuilder.*
 
-fun main() {
+internal fun startApp(port: Int = 7000): Javalin {
     seedCurrencies()
     seedExchangeRates()
 
-    val app = Javalin.create().start(7000)
+    val app = Javalin.create().start(port)
 
     with (app) {
         routes {
@@ -33,7 +33,10 @@ fun main() {
         exception(UnsupportedContentTypeException::class.java) { error, ctx ->
             println(error.message)
             ResponseDispatcher.sendError(
-                    ctx, "Unsupported HTTP content type", errorCode = "1000")
+                    ctx,
+                    "Unsupported HTTP content type",
+                    RequestError.UNSUPPORTED_CONTENT_TYPE.code,
+                    415)
         }
 
         exception(InvalidUserIdException::class.java) { error, ctx ->
@@ -43,12 +46,25 @@ fun main() {
 
         exception(InvalidParameterException::class.java) { error, ctx ->
             ResponseDispatcher.sendError(
-                    ctx, error.message as String, "1002")
+                    ctx,
+                    error.message as String,
+                    RequestError.INVALID_PARAMETER.code)
         }
 
         exception(InsufficientBalanceException::class.java) { error, ctx ->
             ResponseDispatcher.sendError(
-                    ctx, error.message as String, "1003")
+                    ctx,
+                    error.message as String,
+                    RequestError.INSUFFICIENT_BALANCE.code)
         }
+
+//        exception(BadRequestResponse::class.java) { error, ctx ->
+//            println(error)
+//        }
     }
+    return app
+}
+
+fun main() {
+    startApp()
 }

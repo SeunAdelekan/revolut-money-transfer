@@ -71,7 +71,6 @@ class TransactionRepositoryTest {
         with (transactionRepository) {
             save(transaction)
             assertEquals(1, countRecords())
-
         }
     }
 }

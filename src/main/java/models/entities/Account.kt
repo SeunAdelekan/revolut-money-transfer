@@ -10,7 +10,7 @@ import java.time.Instant
 import java.util.*
 
 data class Account(
-        val accountName: String,
+        val accountName: String = "",
         @JsonSerialize(using = BigDecimalSerializer::class)
         var balance: BigDecimal = BigDecimal(0),
         var status: String = "enabled",
