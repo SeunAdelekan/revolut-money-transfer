@@ -1,17 +1,17 @@
 # Revolut Money Transfer REST API
 A RESTful API facilitating money transfers between accounts.
 
-## Installing, Building and Running the Program
+## Getting Started
 Install the program via maven with the following command:
 ```bash
 mvn clean install
 ```
-Build and package the program by running:
+Package the application:
 ```
-mvn clean package
+mvn package
 ```
 
-Application can be run with command
+Start application:
 ```
 java -jar target/money-transfer-api-1.0.0-jar-with-dependencies.jar
 ```
@@ -31,7 +31,7 @@ The following REST resources are exposed by the API:
 |-------------|-------------------------------------------------|---------------------------------------------------|----------------------------------------------------------------|
 | POST        | /accounts                                       | { "accountName": "Account Name", "currency": "NGN" } | This resource creates a new account.                        |
 | GET         | /accounts/:account_id                           |                                                   | This resource gets the details of a given account.             |
-| GET         | /accounts?page=<page>&limit=<limit>             |                                                   | This resource gets a paginated list of created accounts. 'page' and 'limit' are optional query parameters.|
+| GET         | /accounts?page=1&limit=50                       |                                                   | This resource gets a paginated list of created accounts. 'page' and 'limit' are optional query parameters.|
 | POST        | /accounts/:account_id/deposits                  | { "amount": 10000, "currency": "NGN" }            | Use this resource to fund a created account.                   |
 | POST        | /account/:sender_account_id/transfers/:recipient_account_id | { "amount": 1, "currency": "GBP" }    | This resource handles money transfers between created accounts.|
 | GET         | /account/:account_id/transactions?page=<page>&limit=<limit> |                                       | Resource used to retrieve paginated list of transactions performed on a given account.|
