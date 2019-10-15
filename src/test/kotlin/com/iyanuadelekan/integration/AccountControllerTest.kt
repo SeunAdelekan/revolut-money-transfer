@@ -362,6 +362,102 @@ class AccountControllerTest {
         }
     }
 
+    @Test
+    fun `Test withdrawal of account with invalid content type`() {
+        val accountId = "89e0670ef15b4d13a8289e0c616d2983"
+        val data = TransactionOperationData(BigDecimal(1.00), Currency.GBP.name)
+        val response = Unirest
+                .post("${BASE_URL}/accounts/${accountId}/withdrawals")
+                .header("content-type", "text/plain").body(data).asJson()
+
+        assertEquals(415, response.status)
+        val error = objectMapper.readValue(response.body.toString(), ErrorResponse::class.java)
+
+        with (error) {
+            assertEquals("error", status)
+            assertEquals("Unsupported HTTP content type", errorMessage)
+            assertEquals(RequestError.UNSUPPORTED_CONTENT_TYPE.code, errorCode)
+        }
+    }
+
+    @Test
+    fun `Test withdrawal of account with invalid account ID`() {
+        val accountId = "89e0670ef15b4d13a8289e0c616d2983"
+        val response = withdrawAccount(accountId, BigDecimal(500.00), Currency.GBP.name)
+
+        assertEquals(400, response.status)
+        val error = objectMapper.readValue(response.body.toString(), ErrorResponse::class.java)
+        val message = "Path parameter 'account_id' with value '$accountId' invalid - An account with that ID does not exist."
+        with (error) {
+            assertEquals("error", status)
+            assertEquals(message, errorMessage)
+            assertEquals(RequestError.INVALID_PARAMETER.code, errorCode)
+        }
+    }
+
+    @Test
+    fun `Test withdrawal of account with amount equal to 0`() {
+        val account = createAccount("Olu Akinkugbe", Currency.GBP.name)
+        val response = withdrawAccount(account.id, BigDecimal(0.00), Currency.GBP.name)
+
+        assertEquals(400, response.status)
+        val error = objectMapper.readValue(response.body.toString(), ErrorResponse::class.java)
+
+        with (error) {
+            assertEquals("error", status)
+            assertEquals("Request body as TransactionOperationData invalid " +
+                    "- Transaction amounts must be greater than 0.00", errorMessage)
+            assertEquals(RequestError.INVALID_PARAMETER.code, errorCode)
+        }
+    }
+
+    @Test
+    fun `Test withdrawal of account with amount below 0`() {
+        val account = createAccount("Fela Kuti", Currency.GBP.name)
+        val response = withdrawAccount(account.id, BigDecimal(-2500.00), Currency.GBP.name)
+
+        assertEquals(400, response.status)
+        val error = objectMapper.readValue(response.body.toString(), ErrorResponse::class.java)
+
+        with (error) {
+            assertEquals("error", status)
+            assertEquals("Request body as TransactionOperationData invalid " +
+                    "- Transaction amounts must be greater than 0.00", errorMessage)
+            assertEquals(RequestError.INVALID_PARAMETER.code, errorCode)
+        }
+    }
+
+    @Test
+    fun `Test withdrawal of account with amount greater than account balance`() {
+        val account = createAccount("Fela Kuti", Currency.GBP.name)
+        val response = withdrawAccount(account.id, BigDecimal(2500.00), Currency.GBP.name)
+
+        assertEquals(400, response.status)
+        val error = objectMapper.readValue(response.body.toString(), ErrorResponse::class.java)
+
+        with (error) {
+            assertEquals("error", status)
+            assertEquals("Cannot perform transaction of 2500.00 due to insufficient balance.", errorMessage)
+            assertEquals(RequestError.INSUFFICIENT_BALANCE.code, errorCode)
+        }
+    }
+
+    @Test
+    fun `Test withdrawal of account with valid parameters`() {
+        val account = createAccount("Fela Kuti", Currency.GBP.name)
+        fundAccount(account.id, BigDecimal("1000.00"), Currency.GBP.name)
+        val response = withdrawAccount(account.id, BigDecimal(200.00), Currency.GBP.name)
+
+        assertEquals(200, response.status)
+        val responseData = objectMapper.readValue(response.body.toString(), AccountOperationResponse::class.java)
+
+        assertEquals("success", responseData.status)
+        with (responseData.data as AccountVO) {
+            assertEquals(BigDecimal("800.00"), balance)
+            assertEquals("enabled", status)
+        }
+    }
+
     private fun transferMoney(
             amount: BigDecimal,
             senderId: String,
@@ -373,6 +469,14 @@ class AccountControllerTest {
         return Unirest
                 .post("$BASE_URL/accounts/$senderId/transfers/$recipientId")
                 .header("content-type", "application/json").body(transactionData).asJson()
+    }
+
+    private fun withdrawAccount(accountId: String, amount: BigDecimal, currencyName: String): HttpResponse<JsonNode> {
+        val data = TransactionOperationData(amount, currencyName)
+
+        return Unirest
+                .post("${BASE_URL}/accounts/${accountId}/withdrawals")
+                .header("content-type", "application/json").body(data).asJson()
     }
 
     private fun fetchAccounts(page: Int = 1, limit: Int = 50): HttpResponse<JsonNode> {
