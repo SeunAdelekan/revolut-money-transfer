@@ -40,13 +40,6 @@ internal fun startApp(port: Int = 7000): Javalin {
                     415)
         }
 
-        exception(InvalidParameterException::class.java) { error, ctx ->
-            ResponseDispatcher.sendError(
-                    ctx,
-                    error.message as String,
-                    RequestError.INVALID_PARAMETER.code)
-        }
-
         exception(InsufficientBalanceException::class.java) { error, ctx ->
             ResponseDispatcher.sendError(
                     ctx,

@@ -1,14 +1,9 @@
 package com.iyanuadelekan.moneytransfer.models
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.iyanuadelekan.moneytransfer.TransactionCategory
 import com.iyanuadelekan.moneytransfer.TransactionType
-import com.iyanuadelekan.moneytransfer.generateUUID
-import com.iyanuadelekan.moneytransfer.models.entities.Account
-import com.iyanuadelekan.moneytransfer.models.entities.Currency
-import com.iyanuadelekan.moneytransfer.models.entities.Transaction
 import com.iyanuadelekan.moneytransfer.serializers.BigDecimalSerializer
 import com.iyanuadelekan.moneytransfer.serializers.DateSerializer
 import java.math.BigDecimal
@@ -55,16 +50,6 @@ class TransactionVO {
     lateinit var createdAt: Date
 
     @JsonSerialize(using = DateSerializer::class)
-    lateinit var updatedAt: Date
-}
-
-class ExchangeRateVO {
-    lateinit var id: String
-    lateinit var sourceCurrency: Currency
-    lateinit var targetCurrency: Currency
-    var rate: Double = 0.0
-
-    lateinit var createdAt: Date
     lateinit var updatedAt: Date
 }
 

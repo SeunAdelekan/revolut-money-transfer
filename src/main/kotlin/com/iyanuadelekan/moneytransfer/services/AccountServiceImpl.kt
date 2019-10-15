@@ -1,6 +1,5 @@
 package com.iyanuadelekan.moneytransfer.services
 
-import com.iyanuadelekan.moneytransfer.InvalidParameterException
 import com.iyanuadelekan.moneytransfer.getPage
 import com.iyanuadelekan.moneytransfer.models.AccountData
 import com.iyanuadelekan.moneytransfer.models.entities.Account
