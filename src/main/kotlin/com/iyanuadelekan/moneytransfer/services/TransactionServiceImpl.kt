@@ -1,13 +1,8 @@
 package com.iyanuadelekan.moneytransfer.services
 
-import com.iyanuadelekan.moneytransfer.InsufficientBalanceException
-import com.iyanuadelekan.moneytransfer.InvalidParameterException
-import com.iyanuadelekan.moneytransfer.TransactionCategory
-import com.iyanuadelekan.moneytransfer.TransactionType
+import com.iyanuadelekan.moneytransfer.*
 import com.iyanuadelekan.moneytransfer.components.Datastore
-import com.iyanuadelekan.moneytransfer.generateUUID
 import com.iyanuadelekan.moneytransfer.models.TransactionOperationData
-import com.iyanuadelekan.moneytransfer.models.TransferVO
 import com.iyanuadelekan.moneytransfer.models.entities.Account
 import com.iyanuadelekan.moneytransfer.models.entities.Transaction
 import com.iyanuadelekan.moneytransfer.repositories.TransactionRepository
@@ -64,7 +59,7 @@ internal class TransactionServiceImpl : TransactionService {
         val sourceDebitAmount = currencyService.getExchangeAmount(amount, currency, sourceAccount.currency.name)
 
         if (sourceAccount.balance < sourceDebitAmount) {
-            throw InvalidParameterException("You do not have enough money to perform this transaction.")
+            throw InsufficientBalanceException(sourceDebitAmount)
         }
         val targetAccount = accountService.getAccount(recipientAccountId)
         val destinationCreditAmount = currencyService.getExchangeAmount(amount, currency, targetAccount.currency.name)

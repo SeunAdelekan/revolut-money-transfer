@@ -26,7 +26,7 @@ class AccountServiceImpl : AccountService {
 
     override fun getAccounts(page: Int, limit: Int): List<Account> = accountRepository.findByPage(page, limit)
 
-    @Throws(InvalidParameterException::class)
+    @Throws(IllegalArgumentException::class)
     override fun getAccount(accountId: String): Account {
         return accountRepository.findById(accountId)
                 ?: throw IllegalArgumentException("account with id $accountId does not exist")

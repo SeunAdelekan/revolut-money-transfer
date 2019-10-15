@@ -40,11 +40,6 @@ internal fun startApp(port: Int = 7000): Javalin {
                     415)
         }
 
-        exception(InvalidUserIdException::class.java) { error, ctx ->
-            ResponseDispatcher.sendError(
-                    ctx, "A user with id ${error.userId} does not exist.", "1001")
-        }
-
         exception(InvalidParameterException::class.java) { error, ctx ->
             ResponseDispatcher.sendError(
                     ctx,
