@@ -37,7 +37,7 @@ internal class TransactionServiceImpl : TransactionService {
                 accountRecord.balance += convertedAmount
                 transaction.balanceBefore = accountRecord.balance - convertedAmount
                 transaction.balanceAfter = accountRecord.balance
-                accountRecord.transactions.add(transactionRepository.save(transaction))
+                accountRecord.transactions.add(0, transactionRepository.save(transaction))
                 accountRecord
             }
         } ?: throw IllegalArgumentException("account with id $accountId does not exist")
@@ -93,7 +93,7 @@ internal class TransactionServiceImpl : TransactionService {
                 accountRecord.balance -= amount
                 transaction.balanceBefore = accountRecord.balance + amount
                 transaction.balanceAfter = accountRecord.balance
-                accountRecord.transactions.add(transactionRepository.save(transaction))
+                accountRecord.transactions.add(0, transactionRepository.save(transaction))
                 accountRecord
             }
         } ?: throw IllegalArgumentException("account with id $accountId does not exist")
@@ -123,7 +123,7 @@ internal class TransactionServiceImpl : TransactionService {
                 accountRecord.balance += amount
                 transaction.balanceBefore = accountRecord.balance - amount
                 transaction.balanceAfter = accountRecord.balance
-                accountRecord.transactions.add(transactionRepository.save(transaction))
+                accountRecord.transactions.add(0, transactionRepository.save(transaction))
                 accountRecord
             }
         } ?: throw IllegalArgumentException("account with id $accountId does not exist")

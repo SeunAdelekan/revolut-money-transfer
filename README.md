@@ -119,9 +119,12 @@ Sample response:
 }
 ```
 
-### GET /accounts?page=1&limit=3
-Lists all created accounts. Pass 'page' and 'limit' query parameters to enable pagination.
-Neither is required. When not specified page and limit default to 1 and 50 respectively.
+### GET /accounts
+Lists all created accounts.
+
+Query Parameters:
+- page (optional): Current page. 1 by default
+- limit (optional): Size of page. 50 by default.
 
 Sample response:
 ```json
@@ -215,26 +218,17 @@ Sample response:
 ```
 
 ### GET /account/:account_id/transactions
-Get account transactions.
+Get account transactions. Transactions are sorted in descending order by date and time performed.
+
+Query Parameters:
+- page (optional): Current page. 1 by default
+- limit (optional): Size of page. 50 by default.
 
 Sample Response:
 ```json
 {
     "status": "success",
     "data": [
-        {
-            "id": "47455a1d134a412bae2a4e26c1992ec3",
-            "amount": "10000.00",
-            "transactionReference": "TXN-a42f832e2cae452b82073730541e6ef3",
-            "sessionReference": "SESSION-ee2e93863ba44dc397d905536684dc39}",
-            "type": "CREDIT",
-            "category": "ACCOUNT_FUNDING",
-            "description": null,
-            "balanceBefore": "0.00",
-            "balanceAfter": "10000.00",
-            "createdAt": "2019-10-14T11:08:49",
-            "updatedAt": "2019-10-14T11:08:49"
-        },
         {
             "id": "768bb1a7d9da4cf9a8c668f55f309208",
             "amount": "456.66",
@@ -247,6 +241,19 @@ Sample Response:
             "balanceAfter": "9543.34",
             "createdAt": "2019-10-14T11:43:46",
             "updatedAt": "2019-10-14T11:43:46"
+        },
+        {
+            "id": "47455a1d134a412bae2a4e26c1992ec3",
+            "amount": "10000.00",
+            "transactionReference": "TXN-a42f832e2cae452b82073730541e6ef3",
+            "sessionReference": "SESSION-ee2e93863ba44dc397d905536684dc39}",
+            "type": "CREDIT",
+            "category": "ACCOUNT_FUNDING",
+            "description": null,
+            "balanceBefore": "0.00",
+            "balanceAfter": "10000.00",
+            "createdAt": "2019-10-14T11:08:49",
+            "updatedAt": "2019-10-14T11:08:49"
         }
     ]
 }
