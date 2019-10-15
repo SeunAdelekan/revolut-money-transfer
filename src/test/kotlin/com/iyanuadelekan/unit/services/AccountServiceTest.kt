@@ -16,17 +16,10 @@ import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class AccountServiceTest {
+class AccountServiceTest : BaseServiceTest() {
 
     private val accountService = AccountServiceImpl()
     private val transactionService = TransactionServiceImpl()
-
-    companion object {
-
-        @JvmStatic
-        @BeforeClass
-        fun seedDB() = seedCurrencies()
-    }
 
     @Before
     fun init() = Datastore.accountStore.clear()

@@ -20,9 +20,9 @@ import kotlin.test.assertTrue
 class AccountControllerTest {
 
     companion object {
+        private const val PORT = 5000
         private lateinit var app: Javalin
         private lateinit var objectMapper: ObjectMapper
-        private const val PORT = 5000
         private const val BASE_URL = "http://localhost:${PORT}"
 
         @BeforeClass
@@ -83,7 +83,7 @@ class AccountControllerTest {
 
     @Test
     fun `Test account creation with unsupported currency`() {
-        val data = AccountData("John Wick", "USD")
+        val data = AccountData("John Wick", "GUP")
         val response = Unirest
                 .post("${BASE_URL}/accounts")
                 .header("content-type", "application/json").body(data).asJson()

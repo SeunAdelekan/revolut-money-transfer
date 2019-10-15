@@ -24,10 +24,15 @@ class CurrencyServiceImpl : CurrencyService {
 
     override fun currencyExists(currencyName: String): Boolean = currencyRepository.findByName(currencyName) != null
 
-    override fun getExchangeAmount(amount: BigDecimal, sourceCurrencyName: String, targetCurrencyName: String): BigDecimal {
-        val normalizedAmount = amount.setScale(2, RoundingMode.HALF_UP)
+    @Throws(IllegalArgumentException::class)
+    override fun getExchangeAmount(
+            amount: BigDecimal,
+            sourceCurrencyName: String,
+            targetCurrencyName: String): BigDecimal {
+        val roundedAmount = amount.setScale(2, RoundingMode.HALF_UP)
+
         return if (sourceCurrencyName == targetCurrencyName) {
-            normalizedAmount
+            roundedAmount
         } else {
             Datastore.currencyStore[sourceCurrencyName]
                     ?: throw IllegalArgumentException("Invalid currency name $sourceCurrencyName")
@@ -40,7 +45,8 @@ class CurrencyServiceImpl : CurrencyService {
                             "Exchange rate not defined for currency " +
                                     "source $sourceCurrencyName " +
                                     "and target $targetCurrencyName")
-            normalizedAmount.multiply(BigDecimal(exchangeRate.rate)).setScale(2, RoundingMode.HALF_UP)
+
+            roundedAmount.multiply(BigDecimal(exchangeRate.rate)).setScale(2, RoundingMode.HALF_UP)
         }
     }
 }
