@@ -8,14 +8,14 @@ import java.math.BigDecimal
 
 interface TransactionService {
 
-    fun processDeposit(accountId: String, transactionData: TransactionOperationData): Account
+    fun processDeposit(accountId: String, transactionData: TransactionOperationData): Pair<Account, Transaction>
 
     fun processTransfer(
             sourceAccountId: String,
             recipientAccountId: String,
             transactionData: TransactionOperationData): Pair<Account, Transaction>
 
-    fun withdrawFunds(accountId: String, transactionData: TransactionOperationData): Account
+    fun withdrawFunds(accountId: String, transactionData: TransactionOperationData): Pair<Account, Transaction>
 
     fun executeDebit(
             sourceAccountId: String,

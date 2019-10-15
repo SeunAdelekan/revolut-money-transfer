@@ -14,8 +14,6 @@ class AccountAssembler {
             accountName = account.accountName
             balance = account.balance
             status = account.status
-            createdAt = account.createdAt
-            updatedAt = account.updatedAt
             currency = currencyAssembler.toCurrencyVO(account.currency)
             return this
         }

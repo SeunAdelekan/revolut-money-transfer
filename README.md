@@ -2,13 +2,9 @@
 A RESTful API facilitating money transfers between accounts.
 
 ## Getting Started
-Install the program via maven with the following command:
+Build the program via maven with the following command:
 ```bash
 mvn clean install
-```
-Package the application:
-```
-mvn package
 ```
 
 Start application:
@@ -16,6 +12,7 @@ Start application:
 java -jar target/money-transfer-api-1.0.0-jar-with-dependencies.jar
 ```
 
+A postman collection for testing the API is available for download [here](https://www.getpostman.com/collections/ecbab17895ffe6dee918).
 
 ## Technologies used
 * Kotlin as implementation language
@@ -43,8 +40,8 @@ Create account in the service.
 Sample request:
 ```json
 {
-	"accountName": "Iyanu Adelekan",
-	"currency": "NGN"
+	"accountName": "Ibukun Adelekan",
+	"currency": "GBP"
 }
 ```
 Currency should be passed in capital letters.
@@ -54,15 +51,13 @@ Sample response:
 {
     "status": "success",
     "data": {
-        "accountName": "Iyanu Adelekan",
+        "accountName": "Ibukun Adelekan",
         "balance": "0.00",
         "status": "enabled",
-        "createdAt": "2019-10-14T11:08:22",
-        "updatedAt": "2019-10-14T11:08:22",
-        "id": "7fdbd2b7c4ba4ce8bee9878b846f282b",
+        "id": "956aec8bd9a74cb8bb52fc6060eec009",
         "currency": {
-            "name": "NGN",
-            "id": "1ae61577f5fc4f248bbcfd25d7ec0c4d"
+            "name": "GBP",
+            "id": "a81d51037da9485cb8850d30d3fe8913"
         }
     }
 }
@@ -70,6 +65,147 @@ Sample response:
 
 ### POST /accounts/:accountId/deposits
 Deposit money to the given account.
+
+Sample request:
+```json
+{
+	"amount": "25000",
+	"currency": "GBP"
+}
+```
+
+Sample response:
+```json
+{
+    "status": "success",
+    "data": {
+        "account": {
+            "id": "956aec8bd9a74cb8bb52fc6060eec009",
+            "accountName": "Ibukun Adelekan",
+            "balance": "25000.00",
+            "status": "enabled",
+            "currency": {
+                "id": "a81d51037da9485cb8850d30d3fe8913",
+                "name": "GBP"
+            }
+        },
+        "transaction": {
+            "id": "9da7b5c7e38741049a7a2651848c3348",
+            "amount": "25000.00",
+            "transactionReference": "TXN-21ee860d990346beb1760ad4909b39a2",
+            "sessionReference": "SESSION-39f475d1a71941ee99ae5ef854f735ef}",
+            "type": "CREDIT",
+            "category": "ACCOUNT_FUNDING",
+            "balanceBefore": "0.00",
+            "balanceAfter": "25000.00",
+            "createdAt": "2019-10-15T02:13:09"
+        }
+    }
+}
+```
+
+### GET /accounts/:accountId
+Fetch details of a specified account - including the account currency and balance.
+
+Sample response:
+```json
+{
+    "status": "success",
+    "data": {
+        "id": "956aec8bd9a74cb8bb52fc6060eec009",
+        "accountName": "Ibukun Adelekan",
+        "balance": "25000.00",
+        "status": "enabled",
+        "currency": {
+            "id": "a81d51037da9485cb8850d30d3fe8913",
+            "name": "GBP"
+        }
+    }
+}
+```
+
+### GET /accounts
+Fetch a list of all created accounts.
+
+Query Parameters:
+- page (optional): Current page. 1 by default
+- limit (optional): Size of page. 50 by default.
+
+Sample response:
+```json
+{
+    "status": "success",
+    "data": [
+        {
+            "id": "956aec8bd9a74cb8bb52fc6060eec009",
+            "accountName": "Ibukun Adelekan",
+            "balance": "25000.00",
+            "status": "enabled",
+            "currency": {
+                "id": "a81d51037da9485cb8850d30d3fe8913",
+                "name": "GBP"
+            }
+        },
+        {
+            "id": "bcaa9836b0374f38b7752eeaaa9beaf8",
+            "accountName": "Iyanu Adelekan",
+            "balance": "0.00",
+            "status": "enabled",
+            "currency": {
+                "id": "6aed93c40143491b80a45ff5a6f23f59",
+                "name": "NGN"
+            }
+        }
+    ]
+}
+```
+
+### POST /account/:sender_account_id/transfers/:recipient_account_id
+Transfers money between accounts.
+
+Sample request:
+```json
+{
+	"amount": 10000.00,
+	"currency": "NGN",
+	"description": "Hold this for me"
+}
+```
+
+Sample response:
+```json
+{
+    "status": "success",
+    "data": {
+        "account": {
+            "id": "956aec8bd9a74cb8bb52fc6060eec009",
+            "accountName": "Ibukun Adelekan",
+            "balance": "24978.00",
+            "status": "enabled",
+            "currency": {
+                "id": "a81d51037da9485cb8850d30d3fe8913",
+                "name": "GBP"
+            }
+        },
+        "transaction": {
+            "id": "054b91c478e2422dbb0b93b6194a6db0",
+            "amount": "22.00",
+            "recipientAccountId": "bcaa9836b0374f38b7752eeaaa9beaf8",
+            "transactionReference": "TXN-0edfd47b595b4cceabf8a2afe064c75b",
+            "sessionReference": "SESSION-1ee393610327405eb6abdec95f5196e1}",
+            "type": "DEBIT",
+            "category": "BANK_TRANSFER",
+            "description": "Hold this for me",
+            "balanceBefore": "25000.00",
+            "balanceAfter": "24978.00",
+            "createdAt": "2019-10-15T02:15:27"
+        }
+    }
+}
+```
+
+### POST /accounts/:accountId/withdrawals
+Withdraws money to the given account.
 
 Sample request:
 ```json
@@ -84,165 +220,26 @@ Sample response:
 {
     "status": "success",
     "data": {
-        "id": "7fdbd2b7c4ba4ce8bee9878b846f282b",
-        "accountName": "Iyanu Adelekan",
-        "balance": "10000.00",
-        "status": "enabled",
-        "createdAt": "2019-10-14T11:08:22",
-        "updatedAt": "2019-10-14T11:08:22",
-        "currency": {
-            "id": "1ae61577f5fc4f248bbcfd25d7ec0c4d",
-            "name": "NGN"
-        }
-    }
-}
-```
-
-### POST /accounts/:accountId/withdrawals
-Withdraws money to the given account.
-
-Sample request:
-```json
-{
-	"amount": "1000",
-	"currency": "NGN"
-}
-```
-
-Sample response:
-```json
-{
-    "status": "success",
-    "data": {
-        "id": "cbf3224554b94cafa06cab91b0f44a66",
-        "accountName": "Ibukun Adelekan",
-        "balance": "9000.00",
-        "status": "enabled",
-        "createdAt": "2019-10-15T10:06:39",
-        "updatedAt": "2019-10-15T10:06:39",
-        "currency": {
-            "id": "39df6dff7dce4d809bcea9b382f3b229",
-            "name": "NGN"
-        }
-    }
-}
-```
-
-### GET /accounts/:accountId
-Fetch details of a specified account - including the account currency and balance.
-
-Sample response:
-```json
-{
-    "status": "success",
-    "data": {
-        "id": "7fdbd2b7c4ba4ce8bee9878b846f282b",
-        "accountName": "Iyanu Adelekan",
-        "balance": "10000.00",
-        "status": "enabled",
-        "createdAt": "2019-10-14T11:08:22",
-        "updatedAt": "2019-10-14T11:08:22",
-        "currency": {
-            "id": "1ae61577f5fc4f248bbcfd25d7ec0c4d",
-            "name": "NGN"
-        }
-    }
-}
-```
-
-### GET /accounts
-Lists all created accounts.
-
-Query Parameters:
-- page (optional): Current page. 1 by default
-- limit (optional): Size of page. 50 by default.
-
-Sample response:
-```json
-{
-    "status": "success",
-    "data": [
-        {
-            "id": "3c484de9501b429d9be6467d7c5bac6f",
-            "accountName": "Mr. Bean",
-            "balance": "0.00",
+        "account": {
+            "id": "956aec8bd9a74cb8bb52fc6060eec009",
+            "accountName": "Ibukun Adelekan",
+            "balance": "24968.00",
             "status": "enabled",
-            "createdAt": "2019-10-14T11:14:57",
-            "updatedAt": "2019-10-14T11:14:57",
             "currency": {
-                "id": "1e931c999f8a4b4f8e2918dd83b5c623",
+                "id": "a81d51037da9485cb8850d30d3fe8913",
                 "name": "GBP"
             }
         },
-        {
-            "id": "9855ec8b00314852b9a506af5cd96c42",
-            "accountName": "Opeyemi Oyedele",
-            "balance": "0.00",
-            "status": "enabled",
-            "createdAt": "2019-10-14T11:12:12",
-            "updatedAt": "2019-10-14T11:12:12",
-            "currency": {
-                "id": "1ae61577f5fc4f248bbcfd25d7ec0c4d",
-                "name": "NGN"
-            }
-        },
-        {
-            "id": "7fdbd2b7c4ba4ce8bee9878b846f282b",
-            "accountName": "Iyanu Adelekan",
-            "balance": "10000.00",
-            "status": "enabled",
-            "createdAt": "2019-10-14T11:08:22",
-            "updatedAt": "2019-10-14T11:08:22",
-            "currency": {
-                "id": "1ae61577f5fc4f248bbcfd25d7ec0c4d",
-                "name": "NGN"
-            }
-        }
-    ]
-}
-```
-
-### POST /account/:sender_account_id/transfers/:recipient_account_id
-Transfers money between accounts.
-
-Sample request:
-```json
-{
-	"amount": 456.66,
-	"currency": "NGN",
-	"description": "Something Small"
-}
-```
-
-Sample response:
-```json
-{
-    "status": "success",
-    "data": {
-        "account": {
-            "id": "7fdbd2b7c4ba4ce8bee9878b846f282b",
-            "accountName": "Iyanu Adelekan",
-            "balance": "9543.34",
-            "status": "enabled",
-            "createdAt": "2019-10-14T11:08:22",
-            "updatedAt": "2019-10-14T11:08:22",
-            "currency": {
-                "id": "1ae61577f5fc4f248bbcfd25d7ec0c4d",
-                "name": "NGN"
-            }
-        },
         "transaction": {
-            "id": "768bb1a7d9da4cf9a8c668f55f309208",
-            "amount": "456.66",
-            "transactionReference": "TXN-100eaa428737411386d90a211a05e34d",
-            "sessionReference": "SESSION-76d1cd06d19a4b0b8bf88fdaa892a117}",
+            "id": "64ac9c1454684b40b1b17aec51727d69",
+            "amount": "10.00",
+            "transactionReference": "TXN-fc1d832ee07e43c4a5a2f91d104100dc",
+            "sessionReference": "SESSION-90583e2fc2664173a5c1b08ac4b14afa}",
             "type": "DEBIT",
-            "category": "BANK_TRANSFER",
-            "description": "Something Small",
-            "balanceBefore": "10000.00",
-            "balanceAfter": "9543.34",
-            "createdAt": "2019-10-14T11:43:46",
-            "updatedAt": "2019-10-14T11:43:46"
+            "category": "ACCOUNT_WITHDRAWAL",
+            "balanceBefore": "24978.00",
+            "balanceAfter": "24968.00",
+            "createdAt": "2019-10-15T02:16:49"
         }
     }
 }
@@ -261,30 +258,39 @@ Sample Response:
     "status": "success",
     "data": [
         {
-            "id": "768bb1a7d9da4cf9a8c668f55f309208",
-            "amount": "456.66",
-            "transactionReference": "TXN-100eaa428737411386d90a211a05e34d",
-            "sessionReference": "SESSION-76d1cd06d19a4b0b8bf88fdaa892a117}",
+            "id": "64ac9c1454684b40b1b17aec51727d69",
+            "amount": "10.00",
+            "transactionReference": "TXN-fc1d832ee07e43c4a5a2f91d104100dc",
+            "sessionReference": "SESSION-90583e2fc2664173a5c1b08ac4b14afa}",
             "type": "DEBIT",
-            "category": "BANK_TRANSFER",
-            "description": "Something Small",
-            "balanceBefore": "10000.00",
-            "balanceAfter": "9543.34",
-            "createdAt": "2019-10-14T11:43:46",
-            "updatedAt": "2019-10-14T11:43:46"
+            "category": "ACCOUNT_WITHDRAWAL",
+            "balanceBefore": "24978.00",
+            "balanceAfter": "24968.00",
+            "createdAt": "2019-10-15T02:16:49"
         },
         {
-            "id": "47455a1d134a412bae2a4e26c1992ec3",
-            "amount": "10000.00",
-            "transactionReference": "TXN-a42f832e2cae452b82073730541e6ef3",
-            "sessionReference": "SESSION-ee2e93863ba44dc397d905536684dc39}",
+            "id": "054b91c478e2422dbb0b93b6194a6db0",
+            "amount": "22.00",
+            "recipientAccountId": "bcaa9836b0374f38b7752eeaaa9beaf8",
+            "transactionReference": "TXN-0edfd47b595b4cceabf8a2afe064c75b",
+            "sessionReference": "SESSION-1ee393610327405eb6abdec95f5196e1}",
+            "type": "DEBIT",
+            "category": "BANK_TRANSFER",
+            "description": "Hold this for me",
+            "balanceBefore": "25000.00",
+            "balanceAfter": "24978.00",
+            "createdAt": "2019-10-15T02:15:27"
+        },
+        {
+            "id": "9da7b5c7e38741049a7a2651848c3348",
+            "amount": "25000.00",
+            "transactionReference": "TXN-21ee860d990346beb1760ad4909b39a2",
+            "sessionReference": "SESSION-39f475d1a71941ee99ae5ef854f735ef}",
             "type": "CREDIT",
             "category": "ACCOUNT_FUNDING",
-            "description": null,
             "balanceBefore": "0.00",
-            "balanceAfter": "10000.00",
-            "createdAt": "2019-10-14T11:08:49",
-            "updatedAt": "2019-10-14T11:08:49"
+            "balanceAfter": "25000.00",
+            "createdAt": "2019-10-15T02:13:09"
         }
     ]
 }
@@ -302,3 +308,4 @@ Tests can be run with the following command:
 ```bash
 mvn test
 ```
+![Test Results](./assets/test-run.jpeg?raw=true "")

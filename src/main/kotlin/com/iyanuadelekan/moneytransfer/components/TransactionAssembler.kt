@@ -1,7 +1,7 @@
 package com.iyanuadelekan.moneytransfer.components
 
 import com.iyanuadelekan.moneytransfer.models.TransactionVO
-import com.iyanuadelekan.moneytransfer.models.TransferVO
+import com.iyanuadelekan.moneytransfer.models.TransactionOperationVO
 import com.iyanuadelekan.moneytransfer.models.entities.Account
 import com.iyanuadelekan.moneytransfer.models.entities.Transaction
 
@@ -9,13 +9,13 @@ class TransactionAssembler {
 
     private val accountAssembler = AccountAssembler()
 
-    fun toTransferVO(account: Account, transaction: Transaction): TransferVO {
-        val transferVO = TransferVO()
+    fun toTransactionOperationVO(account: Account, transaction: Transaction): TransactionOperationVO {
+        val transactionOperationVO = TransactionOperationVO()
 
-        transferVO.account = accountAssembler.toAccountVO(account)
-        transferVO.transaction = toTransactionVO(transaction)
+        transactionOperationVO.account = accountAssembler.toAccountVO(account)
+        transactionOperationVO.transaction = toTransactionVO(transaction)
 
-        return transferVO
+        return transactionOperationVO
     }
 
     fun toTransactionListVO(transactions: List<Transaction>): List<TransactionVO> {
@@ -37,7 +37,6 @@ class TransactionAssembler {
             recipientAccountId = transaction.recipientAccountId
             category = transaction.category
             createdAt = transaction.createdAt
-            updatedAt = transaction.updatedAt
             description = transaction.description
             return this
         }

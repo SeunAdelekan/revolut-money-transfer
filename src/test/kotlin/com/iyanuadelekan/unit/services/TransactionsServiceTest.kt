@@ -55,7 +55,7 @@ class TransactionsServiceTest : BaseServiceTest() {
         val data = TransactionOperationData(amount, Currency.NGN.name)
         val result = transactionService.processDeposit(account.id, data)
 
-        with (result) {
+        with (result.first) {
             assertEquals(account, this)
             assertEquals(amount, this.balance)
         }
@@ -162,7 +162,7 @@ class TransactionsServiceTest : BaseServiceTest() {
         data = TransactionOperationData(withdrawalAmount, Currency.NGN.name)
         val result = transactionService.withdrawFunds(account.id, data)
 
-        with (result) {
+        with (result.first) {
             assertEquals(account, account)
             assertEquals(depositAmount - withdrawalAmount, balance)
         }

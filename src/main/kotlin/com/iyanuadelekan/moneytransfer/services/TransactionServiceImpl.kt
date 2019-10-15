@@ -21,7 +21,8 @@ internal class TransactionServiceImpl : TransactionService {
     private val transactionRepository: TransactionRepository = TransactionRepositoryImpl()
 
     @Throws(IllegalArgumentException::class)
-    override fun processDeposit(accountId: String, transactionData: TransactionOperationData): Account {
+    override fun processDeposit(accountId: String, transactionData: TransactionOperationData):
+            Pair<Account, Transaction> {
         var account = accountService.getAccount(accountId)
         val (amount, currency) = transactionData
 
@@ -47,22 +48,21 @@ internal class TransactionServiceImpl : TransactionService {
             }
         } ?: throw IllegalArgumentException(buildAccountIdError(accountId))
 
-        return account
+        return Pair(account, transaction)
     }
 
-    override fun withdrawFunds(accountId: String, transactionData: TransactionOperationData): Account {
+    override fun withdrawFunds(accountId: String, transactionData: TransactionOperationData):
+            Pair<Account, Transaction> {
         val account = accountService.getAccount(accountId)
         val (amount, currency) = transactionData
 
         require(amount > BigDecimal.ZERO) { ErrorMessage.INVALID_TRANSACTION_AMOUNT.message }
         val convertedAmount = currencyService.getExchangeAmount(amount, currency, account.currency.name)
 
-        val debitResult = executeDebit(
+        return executeDebit(
                 accountId,
-                convertedAmount,generateSessionReference(),
+                convertedAmount, generateSessionReference(),
                 TransactionCategory.ACCOUNT_WITHDRAWAL)
-
-        return debitResult.first
     }
 
     override fun processTransfer(

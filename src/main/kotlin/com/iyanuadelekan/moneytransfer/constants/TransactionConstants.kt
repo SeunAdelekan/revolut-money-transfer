@@ -11,7 +11,7 @@ enum class TransactionCategory {
     ACCOUNT_WITHDRAWAL
 }
 
-enum class Currency(name: String) {
-    NGN("NGN"),
-    GBP("GBP")
+enum class Currency {
+    NGN,
+    GBP
 }

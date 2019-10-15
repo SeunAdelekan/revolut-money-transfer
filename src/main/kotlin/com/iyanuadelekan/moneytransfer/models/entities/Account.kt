@@ -13,8 +13,10 @@ data class Account(
         @JsonSerialize(using = BigDecimalSerializer::class)
         var balance: BigDecimal = BigDecimal(0),
         var status: String = "enabled",
+        @JsonIgnore
         @JsonSerialize(using = DateSerializer::class)
         val createdAt: Date = Date(),
+        @JsonIgnore
         @JsonSerialize(using = DateSerializer::class)
         val updatedAt: Date = Date()
 ) {

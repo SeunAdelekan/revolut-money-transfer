@@ -48,9 +48,10 @@ internal object AccountController {
 
     internal val fundAccount = Handler { ctx ->
         val (accountId, transactionData) = parameterValidator.validateFundActionParams(ctx)
-        val account = transactionService.processDeposit(accountId, transactionData)
+        val result = transactionService.processDeposit(accountId, transactionData)
 
-        ResponseDispatcher.sendSuccess(ctx, accountAssembler.toAccountVO(account), 200)
+        ResponseDispatcher.sendSuccess(
+                ctx, transactionAssembler.toTransactionOperationVO(result.first, result.second), 200)
     }
 
     internal val transferFundsToAccount = Handler { ctx ->
@@ -60,15 +61,16 @@ internal object AccountController {
                 sourceAccountId,
                 recipientAccountId,
                 transactionData)
-        val transferData = transactionAssembler.toTransferVO(result.first, result.second)
+        val transferData = transactionAssembler.toTransactionOperationVO(result.first, result.second)
 
         ResponseDispatcher.sendSuccess(ctx, transferData, 200)
     }
 
     internal val withdrawAccount = Handler { ctx ->
         val (accountId, transactionData) = parameterValidator.validateFundActionParams(ctx)
-        val account = transactionService.withdrawFunds(accountId, transactionData)
+        val result = transactionService.withdrawFunds(accountId, transactionData)
 
-        ResponseDispatcher.sendSuccess(ctx, accountAssembler.toAccountVO(account), 200)
+        ResponseDispatcher.sendSuccess(
+                ctx, transactionAssembler.toTransactionOperationVO(result.first, result.second), 200)
     }
 }

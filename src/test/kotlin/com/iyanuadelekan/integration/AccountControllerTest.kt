@@ -345,18 +345,17 @@ class AccountControllerTest {
                 Currency.GBP.name,
                 transactionDescription)
 
-        val responseBody = objectMapper.readValue(response.body.toString(), TransferMoneyResponse::class.java)
+        val responseBody = objectMapper.readValue(response.body.toString(), MoneyOperationsResponse::class.java)
 
         with (responseBody) {
             assertEquals("success", status)
             assertTrue(responseBody.data != null)
-            val data = responseBody.data as TransferVO
+            val data = responseBody.data as TransactionOperationVO
 
             assertEquals(accountOne.id, data.account.id)
             assertEquals(BigDecimal("980.00"), data.account.balance)
             assertEquals(accountOne.accountName, data.account.accountName)
             assertEquals(accountOne.status, data.account.status)
-            assertEquals(accountOne.createdAt, data.account.createdAt)
 
 
             assertEquals(TransactionType.DEBIT, data.transaction.type)
@@ -454,10 +453,10 @@ class AccountControllerTest {
         val response = withdrawAccount(account.id, BigDecimal(200.00), Currency.GBP.name)
 
         assertEquals(200, response.status)
-        val responseData = objectMapper.readValue(response.body.toString(), AccountOperationResponse::class.java)
+        val responseData = objectMapper.readValue(response.body.toString(), MoneyOperationsResponse::class.java)
 
         assertEquals("success", responseData.status)
-        with (responseData.data as AccountVO) {
+        with (responseData.data?.account as AccountVO) {
             assertEquals(BigDecimal("800.00"), balance)
             assertEquals("enabled", status)
         }

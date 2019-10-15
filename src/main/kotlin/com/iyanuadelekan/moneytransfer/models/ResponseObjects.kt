@@ -1,5 +1,6 @@
 package com.iyanuadelekan.moneytransfer.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
@@ -16,10 +17,6 @@ class AccountVO {
     @JsonSerialize(using = BigDecimalSerializer::class)
     lateinit var balance: BigDecimal
     lateinit var status: String
-    @JsonSerialize(using = DateSerializer::class)
-    lateinit var createdAt: Date
-    @JsonSerialize(using = DateSerializer::class)
-    lateinit var updatedAt: Date
     lateinit var currency: CurrencyVO
 }
 
@@ -61,12 +58,9 @@ class TransactionVO {
 
     @JsonSerialize(using = DateSerializer::class)
     lateinit var createdAt: Date
-
-    @JsonSerialize(using = DateSerializer::class)
-    lateinit var updatedAt: Date
 }
 
-class TransferVO {
+class TransactionOperationVO {
     lateinit var account: AccountVO
     lateinit var transaction: TransactionVO
 }
@@ -84,4 +78,4 @@ data class ErrorResponse(val errorMessage: String = "", val errorCode: String = 
 class AccountOperationResponse(override val data: AccountVO? = null) : SuccessResponse(data)
 class GetTransactionResponse(override val data: ArrayList<TransactionVO>? = null) : SuccessResponse(data)
 class GetAccountsResponse(override val data: ArrayList<AccountVO>? = null) : SuccessResponse(data)
-class TransferMoneyResponse(override val data: TransferVO? = null) : SuccessResponse(data)
+class MoneyOperationsResponse(override val data: TransactionOperationVO? = null) : SuccessResponse(data)
