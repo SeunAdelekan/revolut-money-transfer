@@ -31,10 +31,11 @@ The following REST resources are exposed by the API:
 |-------------|-------------------------------------------------|---------------------------------------------------|----------------------------------------------------------------|
 | POST        | /accounts                                       | { "accountName": "Account Name", "currency": "NGN" } | This resource creates a new account.                        |
 | GET         | /accounts/:account_id                           |                                                   | This resource gets the details of a given account.             |
-| GET         | /accounts?page=1&limit=50                       |                                                   | This resource gets a paginated list of created accounts. 'page' and 'limit' are optional query parameters.|
+| GET         | /accounts                                       |                                                   | This resource gets a paginated list of created accounts. 'page' and 'limit' are optional query parameters.|
 | POST        | /accounts/:account_id/deposits                  | { "amount": 10000, "currency": "NGN" }            | Use this resource to fund a created account.                   |
+| POST        | /accounts/:account_id/withdrawals               | { "amount": 10000, "currency": "NGN" }            | Use this resource to withdraw funds from a created account.    |
 | POST        | /account/:sender_account_id/transfers/:recipient_account_id | { "amount": 1, "currency": "GBP" }    | This resource handles money transfers between created accounts.|
-| GET         | /account/:account_id/transactions?page=<page>&limit=<limit> |                                       | Resource used to retrieve paginated list of transactions performed on a given account.|
+| GET         | /account/:account_id/transactions               |                                       | Resource used to retrieve paginated list of transactions performed on a given account.|
 
 
 ### POST /accounts
@@ -91,6 +92,36 @@ Sample response:
         "updatedAt": "2019-10-14T11:08:22",
         "currency": {
             "id": "1ae61577f5fc4f248bbcfd25d7ec0c4d",
+            "name": "NGN"
+        }
+    }
+}
+```
+
+### POST /accounts/:accountId/withdrawals
+Withdraws money to the given account.
+
+Sample request:
+```json
+{
+	"amount": "1000",
+	"currency": "NGN"
+}
+```
+
+Sample response:
+```json
+{
+    "status": "success",
+    "data": {
+        "id": "cbf3224554b94cafa06cab91b0f44a66",
+        "accountName": "Ibukun Adelekan",
+        "balance": "9000.00",
+        "status": "enabled",
+        "createdAt": "2019-10-15T10:06:39",
+        "updatedAt": "2019-10-15T10:06:39",
+        "currency": {
+            "id": "39df6dff7dce4d809bcea9b382f3b229",
             "name": "NGN"
         }
     }

@@ -101,7 +101,7 @@ internal class TransactionServiceImpl : TransactionService {
                 transactionReference,
                 sessionReference,
                 TransactionType.DEBIT,
-                TransactionCategory.BANK_TRANSFER,
+                transactionCategory,
                 description)
 
         val debitedAccount = Datastore.accountStore.compute(accountId) { _, accountRecord ->
