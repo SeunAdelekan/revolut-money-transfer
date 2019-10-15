@@ -1,6 +1,6 @@
 package com.iyanuadelekan.unit.services
 
-import com.iyanuadelekan.moneytransfer.Currency
+import com.iyanuadelekan.moneytransfer.constants.Currency
 import com.iyanuadelekan.moneytransfer.components.Datastore
 import com.iyanuadelekan.moneytransfer.models.CurrencyData
 import com.iyanuadelekan.moneytransfer.services.CurrencyServiceImpl

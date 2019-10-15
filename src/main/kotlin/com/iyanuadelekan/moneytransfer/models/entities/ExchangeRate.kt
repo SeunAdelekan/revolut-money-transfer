@@ -1,7 +1,7 @@
 package com.iyanuadelekan.moneytransfer.models.entities
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.iyanuadelekan.moneytransfer.generateUUID
+import com.iyanuadelekan.moneytransfer.helpers.generateUUID
 import com.iyanuadelekan.moneytransfer.serializers.DateSerializer
 import java.util.*
 

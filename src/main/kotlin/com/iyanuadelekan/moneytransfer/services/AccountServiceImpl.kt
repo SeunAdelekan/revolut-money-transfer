@@ -1,6 +1,6 @@
 package com.iyanuadelekan.moneytransfer.services
 
-import com.iyanuadelekan.moneytransfer.getPage
+import com.iyanuadelekan.moneytransfer.helpers.getPage
 import com.iyanuadelekan.moneytransfer.models.AccountData
 import com.iyanuadelekan.moneytransfer.models.entities.Account
 import com.iyanuadelekan.moneytransfer.models.entities.Currency

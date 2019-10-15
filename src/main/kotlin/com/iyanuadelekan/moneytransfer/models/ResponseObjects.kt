@@ -1,9 +1,10 @@
 package com.iyanuadelekan.moneytransfer.models
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.iyanuadelekan.moneytransfer.TransactionCategory
-import com.iyanuadelekan.moneytransfer.TransactionType
+import com.iyanuadelekan.moneytransfer.constants.TransactionCategory
+import com.iyanuadelekan.moneytransfer.constants.TransactionType
 import com.iyanuadelekan.moneytransfer.serializers.BigDecimalSerializer
 import com.iyanuadelekan.moneytransfer.serializers.DateSerializer
 import java.math.BigDecimal
@@ -30,14 +31,26 @@ class CurrencyVO {
 class TransactionVO {
 
     lateinit var id: String
+
     @JsonSerialize(using = BigDecimalSerializer::class)
     lateinit var amount: BigDecimal
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    var senderAccountId: String? = null
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    var recipientAccountId: String? = null
     // Unique reference for any given transaction
     lateinit var transactionReference: String
+
     // Session reference tying all debit/credit legs of a transfer
     lateinit var sessionReference: String
+
     lateinit var type: TransactionType
+
     lateinit var category: TransactionCategory
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     var description: String? = null
 
     @JsonSerialize(using = BigDecimalSerializer::class)

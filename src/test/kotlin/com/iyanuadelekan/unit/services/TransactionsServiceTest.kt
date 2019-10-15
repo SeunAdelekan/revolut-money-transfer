@@ -1,7 +1,11 @@
 package com.iyanuadelekan.unit.services
 
-import com.iyanuadelekan.moneytransfer.*
 import com.iyanuadelekan.moneytransfer.components.Datastore
+import com.iyanuadelekan.moneytransfer.constants.Currency
+import com.iyanuadelekan.moneytransfer.constants.TransactionCategory
+import com.iyanuadelekan.moneytransfer.constants.TransactionType
+import com.iyanuadelekan.moneytransfer.helpers.InsufficientBalanceException
+import com.iyanuadelekan.moneytransfer.helpers.generateUUID
 import com.iyanuadelekan.moneytransfer.models.AccountData
 import com.iyanuadelekan.moneytransfer.models.TransactionOperationData
 import com.iyanuadelekan.moneytransfer.services.AccountServiceImpl
@@ -105,6 +109,7 @@ class TransactionsServiceTest : BaseServiceTest() {
             assertEquals(TransactionCategory.BANK_TRANSFER, category)
             assertEquals(amount, transferAmount)
             assertEquals(sourceAccount.balance, balanceAfter)
+            assertEquals(recipientAccountId, destinationAccount.id)
             assertEquals(sourceAccount.balance.plus(transferAmount), balanceBefore)
         }
     }

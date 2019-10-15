@@ -1,7 +1,7 @@
 package com.iyanuadelekan.moneytransfer.repositories
 
 import com.iyanuadelekan.moneytransfer.components.Datastore
-import com.iyanuadelekan.moneytransfer.getPage
+import com.iyanuadelekan.moneytransfer.helpers.getPage
 import com.iyanuadelekan.moneytransfer.models.entities.Account
 
 class AccountRepositoryImpl : AccountRepository {

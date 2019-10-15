@@ -7,7 +7,7 @@ import org.junit.Before
 import org.junit.Test
 import com.iyanuadelekan.moneytransfer.repositories.CurrencyRepositoryImpl
 import com.iyanuadelekan.moneytransfer.repositories.ExchangeRateRepositoryImpl
-import com.iyanuadelekan.moneytransfer.seedCurrencies
+import com.iyanuadelekan.moneytransfer.helpers.seedCurrencies
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 

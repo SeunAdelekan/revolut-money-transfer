@@ -1,5 +1,6 @@
 package com.iyanuadelekan.moneytransfer.components
 
+import com.iyanuadelekan.moneytransfer.constants.ErrorMessage
 import com.iyanuadelekan.moneytransfer.models.AccountData
 import com.iyanuadelekan.moneytransfer.models.TransactionOperationData
 import com.iyanuadelekan.moneytransfer.services.AccountService
@@ -23,20 +24,20 @@ class ParameterValidator {
         try {
             dataValidator = ctx.bodyValidator()
         } catch (error: Exception) {
-            throw BadRequestResponse("accountName and currency are required.")
+            throw BadRequestResponse(ErrorMessage.ACCOUNT_CREATION_PARAMS_REQUIRED.message)
         }
         return dataValidator
                 .check({ it.accountName.length > 3 },
-                        "Account name must be a minimum of 3 characters in length.")
+                        ErrorMessage.INVALID_ACCOUNT_NAME.message)
                 .check({ currencyService.currencyExists(it.currency ) },
-                        "That currency is not supported at the moment")
+                        ErrorMessage.INVALID_CURRENCY_NAME.message)
                 .get()
     }
 
     fun validateAccountRetrievalParams(ctx: Context): String {
         val accountId = ctx.pathParam<String>("account_id")
                 .check({ accountService.verifyAccountRegistered(it) },
-                        "An account with that ID does not exist.")
+                        ErrorMessage.INVALID_ACCOUNT_ID.message)
                 .get()
         val account = accountService.getAccount(accountId)
         return account.id
@@ -45,11 +46,11 @@ class ParameterValidator {
     fun validateListAccountParams(ctx: Context): Pair<Int, Int> {
         with (ctx) {
             val page = queryParam<Int>("page")
-                    .check({ it > 0 }, "Page must be greater than 0")
+                    .check({ it > 0 }, ErrorMessage.INVALID_PAGE.message)
                     .getOrNull() ?: 1
             val limit = queryParam<Int>("limit")
                     .check({ it > 0 },
-                            "Limit must be greater than 0").getOrNull() ?: 50
+                            ErrorMessage.INVALID_PAGE_LIMIT.message).getOrNull() ?: 50
 
             return Pair(page, limit)
         }
@@ -59,7 +60,7 @@ class ParameterValidator {
         with (ctx) {
             val accountId = pathParam<String>("account_id")
                     .check({ accountService.verifyAccountRegistered(it) },
-                    "An account with that ID does not exist.")
+                    ErrorMessage.INVALID_ACCOUNT_ID.message)
                     .get()
 
             val transactionData = validateTransactionOperationData(ctx)
@@ -72,11 +73,11 @@ class ParameterValidator {
         with (ctx) {
             val accountId = pathParam<String>("account_id")
                     .check({ accountService.verifyAccountRegistered(it) },
-                            "A sender account with that ID does not exist.")
+                            ErrorMessage.INVALID_SENDER_ACCOUNT_ID.message)
                     .get()
             val recipientAccountId = pathParam<String>("recipient_account_id")
                     .check({ accountService.verifyAccountRegistered(it) },
-                    "A recipient account with that ID does not exist.")
+                    ErrorMessage.INVALID_RECIPIENT_ACCOUNT_ID.message)
                     .get()
             val transactionData = validateTransactionOperationData(ctx)
 
@@ -88,14 +89,14 @@ class ParameterValidator {
         with (ctx) {
             val accountId = pathParam<String>("account_id")
                     .check({ accountService.verifyAccountRegistered(it) },
-                            "An account with that ID does not exist.")
+                            ErrorMessage.INVALID_ACCOUNT_ID.message)
                     .get()
             val page = queryParam<Int>("page")
-                    .check({ it > 0 }, "page must be greater than 0")
+                    .check({ it > 0 }, ErrorMessage.INVALID_PAGE.message)
                     .getOrNull() ?: 1
             val limit = queryParam<Int>("limit")
                     .check({ it > 0 },
-                            "limit must be greater than 0").getOrNull() ?: 50
+                            ErrorMessage.INVALID_PAGE_LIMIT.message).getOrNull() ?: 50
             return Triple(accountId, page, limit)
         }
     }
@@ -107,13 +108,13 @@ class ParameterValidator {
         try {
             transactionDataValidator = ctx.bodyValidator()
         } catch (error: Exception) {
-            throw BadRequestResponse("amount and currency are required.")
+            throw BadRequestResponse(ErrorMessage.TRANSACTION_OPERATION_PARAMS_REQUIRED.message)
         }
 
         return transactionDataValidator.check({ it.amount > BigDecimal.ZERO },
-                "Transaction amounts must be greater than 0.00")
+                ErrorMessage.INVALID_TRANSACTION_AMOUNT.message)
                 .check({ currencyService.currencyExists(it.currency ) },
-                        "That currency is not supported at the moment")
+                        ErrorMessage.INVALID_CURRENCY_NAME.message)
                 .get()
     }
 }

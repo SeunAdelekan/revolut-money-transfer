@@ -1,6 +1,6 @@
 package com.iyanuadelekan.moneytransfer.services
 
-import com.iyanuadelekan.moneytransfer.TransactionCategory
+import com.iyanuadelekan.moneytransfer.constants.TransactionCategory
 import com.iyanuadelekan.moneytransfer.models.TransactionOperationData
 import com.iyanuadelekan.moneytransfer.models.entities.Account
 import com.iyanuadelekan.moneytransfer.models.entities.Transaction
@@ -18,14 +18,16 @@ interface TransactionService {
     fun withdrawFunds(accountId: String, transactionData: TransactionOperationData): Account
 
     fun executeDebit(
-            accountId: String,
+            sourceAccountId: String,
             amount: BigDecimal,
             sessionReference: String,
             transactionCategory: TransactionCategory,
-            description: String? = null): Pair<Account, Transaction>
+            description: String? = null,
+            recipientAccountId: String? = null): Pair<Account, Transaction>
 
     fun executeCredit(
-            accountId: String,
+            sourceAccountId: String,
+            recipientAccountId: String,
             amount: BigDecimal,
             sessionReference: String,
             description: String? = null): Pair<Account, Transaction>

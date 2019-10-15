@@ -1,7 +1,12 @@
 package com.iyanuadelekan.moneytransfer.services
 
-import com.iyanuadelekan.moneytransfer.*
 import com.iyanuadelekan.moneytransfer.components.Datastore
+import com.iyanuadelekan.moneytransfer.constants.ErrorMessage
+import com.iyanuadelekan.moneytransfer.constants.TransactionCategory
+import com.iyanuadelekan.moneytransfer.constants.TransactionType
+import com.iyanuadelekan.moneytransfer.helpers.InsufficientBalanceException
+import com.iyanuadelekan.moneytransfer.helpers.buildAccountIdError
+import com.iyanuadelekan.moneytransfer.helpers.generateUUID
 import com.iyanuadelekan.moneytransfer.models.TransactionOperationData
 import com.iyanuadelekan.moneytransfer.models.entities.Account
 import com.iyanuadelekan.moneytransfer.models.entities.Transaction
@@ -20,7 +25,7 @@ internal class TransactionServiceImpl : TransactionService {
         var account = accountService.getAccount(accountId)
         val (amount, currency) = transactionData
 
-        require(amount > BigDecimal.ZERO) { "Transaction amounts must be greater than 0.00" }
+        require(amount > BigDecimal.ZERO) { ErrorMessage.INVALID_TRANSACTION_AMOUNT.message }
         val convertedAmount = currencyService.getExchangeAmount(amount, currency, account.currency.name)
 
         val transaction = buildTransaction(
@@ -40,7 +45,7 @@ internal class TransactionServiceImpl : TransactionService {
                 accountRecord.transactions.add(0, transactionRepository.save(transaction))
                 accountRecord
             }
-        } ?: throw IllegalArgumentException("account with id $accountId does not exist")
+        } ?: throw IllegalArgumentException(buildAccountIdError(accountId))
 
         return account
     }
@@ -49,7 +54,7 @@ internal class TransactionServiceImpl : TransactionService {
         val account = accountService.getAccount(accountId)
         val (amount, currency) = transactionData
 
-        require(amount > BigDecimal.ZERO) { "Transaction amounts must be greater than 0.00" }
+        require(amount > BigDecimal.ZERO) { ErrorMessage.INVALID_TRANSACTION_AMOUNT.message }
         val convertedAmount = currencyService.getExchangeAmount(amount, currency, account.currency.name)
 
         val debitResult = executeDebit(
@@ -66,7 +71,7 @@ internal class TransactionServiceImpl : TransactionService {
             transactionData: TransactionOperationData): Pair<Account, Transaction> {
         val (amount, currency, description) = transactionData
 
-        require(amount > BigDecimal.ZERO) { "Transaction amounts must be greater than 0.00" }
+        require(amount > BigDecimal.ZERO) { ErrorMessage.INVALID_TRANSACTION_AMOUNT.message }
 
         val sourceAccount = accountService.getAccount(sourceAccountId)
         val sourceDebitAmount = currencyService.getExchangeAmount(amount, currency, sourceAccount.currency.name)
@@ -82,19 +87,21 @@ internal class TransactionServiceImpl : TransactionService {
                 sourceDebitAmount,
                 sessionReference,
                 TransactionCategory.BANK_TRANSFER,
-                description)
-        executeCredit(recipientAccountId, destinationCreditAmount, sessionReference, description)
+                description,
+                recipientAccountId)
+        executeCredit(sourceAccountId, recipientAccountId, destinationCreditAmount, sessionReference, description)
 
         return debitResult
     }
 
     @Throws(IllegalArgumentException::class)
     override fun executeDebit(
-            accountId: String,
+            sourceAccountId: String,
             amount: BigDecimal,
             sessionReference: String,
             transactionCategory: TransactionCategory,
-            description: String?): Pair<Account, Transaction> {
+            description: String?,
+            recipientAccountId: String?): Pair<Account, Transaction> {
         val transactionReference = generateTransactionReference()
         val transaction = buildTransaction(
                 amount,
@@ -102,9 +109,11 @@ internal class TransactionServiceImpl : TransactionService {
                 sessionReference,
                 TransactionType.DEBIT,
                 transactionCategory,
-                description)
+                description,
+                sourceAccountId,
+                recipientAccountId)
 
-        val debitedAccount = Datastore.accountStore.compute(accountId) { _, accountRecord ->
+        val debitedAccount = Datastore.accountStore.compute(sourceAccountId) { _, accountRecord ->
             if (accountRecord == null) {
                 accountRecord
             } else {
@@ -117,14 +126,15 @@ internal class TransactionServiceImpl : TransactionService {
                 accountRecord.transactions.add(0, transactionRepository.save(transaction))
                 accountRecord
             }
-        } ?: throw IllegalArgumentException("account with id $accountId does not exist")
+        } ?: throw IllegalArgumentException(buildAccountIdError(sourceAccountId))
 
         return Pair(debitedAccount, transaction)
     }
 
     @Throws(IllegalArgumentException::class)
     override fun executeCredit(
-            accountId: String,
+            sourceAccountId: String,
+            recipientAccountId: String,
             amount: BigDecimal,
             sessionReference: String,
             description: String?): Pair<Account, Transaction> {
@@ -135,9 +145,11 @@ internal class TransactionServiceImpl : TransactionService {
                 sessionReference,
                 TransactionType.CREDIT,
                 TransactionCategory.BANK_TRANSFER,
-                description)
+                description,
+                sourceAccountId,
+                recipientAccountId)
 
-        val creditedAccount = Datastore.accountStore.compute(accountId) { _, accountRecord ->
+        val creditedAccount = Datastore.accountStore.compute(recipientAccountId) { _, accountRecord ->
             if (accountRecord == null) {
                 accountRecord
             } else {
@@ -147,7 +159,7 @@ internal class TransactionServiceImpl : TransactionService {
                 accountRecord.transactions.add(0, transactionRepository.save(transaction))
                 accountRecord
             }
-        } ?: throw IllegalArgumentException("account with id $accountId does not exist")
+        } ?: throw IllegalArgumentException(buildAccountIdError(recipientAccountId))
 
         return Pair(creditedAccount, transaction)
     }
@@ -158,8 +170,19 @@ internal class TransactionServiceImpl : TransactionService {
             sessionReference: String,
             type: TransactionType,
             category: TransactionCategory,
-            description: String? = null): Transaction
-            = Transaction(amount, transactionReference, sessionReference, type, category, description)
+            description: String? = null,
+            senderAccountId: String? = null,
+            recipientAccountId: String? = null): Transaction {
+        val transaction = Transaction(amount, transactionReference, sessionReference, type, category, description)
+
+        if (category == TransactionCategory.BANK_TRANSFER && type == TransactionType.DEBIT) {
+            transaction.recipientAccountId = recipientAccountId
+        }
+        if (category == TransactionCategory.BANK_TRANSFER && type == TransactionType.CREDIT) {
+            transaction.senderAccountId = senderAccountId
+        }
+        return transaction
+    }
 
     private fun generateSessionReference() = "SESSION-${generateUUID()}}"
 

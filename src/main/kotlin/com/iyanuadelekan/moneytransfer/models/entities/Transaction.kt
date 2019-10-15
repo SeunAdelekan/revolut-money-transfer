@@ -1,9 +1,9 @@
 package com.iyanuadelekan.moneytransfer.models.entities
 
-import com.iyanuadelekan.moneytransfer.TransactionCategory
-import com.iyanuadelekan.moneytransfer.TransactionType
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.iyanuadelekan.moneytransfer.generateUUID
+import com.iyanuadelekan.moneytransfer.constants.TransactionCategory
+import com.iyanuadelekan.moneytransfer.constants.TransactionType
+import com.iyanuadelekan.moneytransfer.helpers.generateUUID
 import com.iyanuadelekan.moneytransfer.serializers.BigDecimalSerializer
 import com.iyanuadelekan.moneytransfer.serializers.DateSerializer
 import java.math.BigDecimal
@@ -27,6 +27,10 @@ data class Transaction(
 
         @JsonSerialize(using = BigDecimalSerializer::class)
         lateinit var balanceAfter: BigDecimal
+
+        var senderAccountId: String? = null
+
+        var recipientAccountId: String? = null
 
         @JsonSerialize(using = DateSerializer::class)
         val createdAt: Date = Date()

@@ -1,4 +1,4 @@
-package com.iyanuadelekan.moneytransfer
+package com.iyanuadelekan.moneytransfer.helpers
 
 import com.iyanuadelekan.moneytransfer.models.entities.Currency
 import com.iyanuadelekan.moneytransfer.models.entities.ExchangeRate

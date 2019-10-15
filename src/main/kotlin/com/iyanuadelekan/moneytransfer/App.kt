@@ -1,7 +1,13 @@
 package com.iyanuadelekan.moneytransfer
 
 import com.iyanuadelekan.moneytransfer.components.ResponseDispatcher
+import com.iyanuadelekan.moneytransfer.constants.ErrorMessage
+import com.iyanuadelekan.moneytransfer.constants.RequestError
 import com.iyanuadelekan.moneytransfer.controllers.AccountController
+import com.iyanuadelekan.moneytransfer.helpers.InsufficientBalanceException
+import com.iyanuadelekan.moneytransfer.helpers.UnsupportedContentTypeException
+import com.iyanuadelekan.moneytransfer.helpers.seedCurrencies
+import com.iyanuadelekan.moneytransfer.helpers.seedExchangeRates
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder
 import io.javalin.apibuilder.ApiBuilder.*
@@ -36,7 +42,7 @@ internal fun startApp(port: Int = 7000): Javalin {
         exception(UnsupportedContentTypeException::class.java) { _, ctx ->
             ResponseDispatcher.sendError(
                     ctx,
-                    "Unsupported HTTP content type",
+                    ErrorMessage.UNSUPPORTED_CONTENT_TYPE.message,
                     RequestError.UNSUPPORTED_CONTENT_TYPE.code,
                     415)
         }

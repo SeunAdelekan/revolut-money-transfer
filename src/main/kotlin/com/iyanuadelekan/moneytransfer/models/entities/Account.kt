@@ -2,11 +2,10 @@ package com.iyanuadelekan.moneytransfer.models.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.iyanuadelekan.moneytransfer.generateUUID
+import com.iyanuadelekan.moneytransfer.helpers.generateUUID
 import com.iyanuadelekan.moneytransfer.serializers.BigDecimalSerializer
 import com.iyanuadelekan.moneytransfer.serializers.DateSerializer
 import java.math.BigDecimal
-import java.time.Instant
 import java.util.*
 
 data class Account(

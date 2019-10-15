@@ -1,7 +1,7 @@
 package com.iyanuadelekan.unit.services
 
-import com.iyanuadelekan.moneytransfer.seedCurrencies
-import com.iyanuadelekan.moneytransfer.seedExchangeRates
+import com.iyanuadelekan.moneytransfer.helpers.seedCurrencies
+import com.iyanuadelekan.moneytransfer.helpers.seedExchangeRates
 import org.junit.BeforeClass
 
 abstract class BaseServiceTest {

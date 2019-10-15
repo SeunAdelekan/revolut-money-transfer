@@ -1,4 +1,4 @@
-package com.iyanuadelekan.moneytransfer
+package com.iyanuadelekan.moneytransfer.helpers
 
 import java.util.*
 import kotlin.math.min

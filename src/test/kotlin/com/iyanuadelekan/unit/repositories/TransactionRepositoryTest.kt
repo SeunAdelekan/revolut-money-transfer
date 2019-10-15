@@ -1,9 +1,9 @@
 package com.iyanuadelekan.unit.repositories
 
-import com.iyanuadelekan.moneytransfer.TransactionCategory
-import com.iyanuadelekan.moneytransfer.TransactionType
+import com.iyanuadelekan.moneytransfer.constants.TransactionCategory
+import com.iyanuadelekan.moneytransfer.constants.TransactionType
 import com.iyanuadelekan.moneytransfer.components.Datastore
-import com.iyanuadelekan.moneytransfer.generateUUID
+import com.iyanuadelekan.moneytransfer.helpers.generateUUID
 import com.iyanuadelekan.moneytransfer.models.entities.Transaction
 import org.junit.Before
 import org.junit.Test

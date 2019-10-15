@@ -33,6 +33,8 @@ class TransactionAssembler {
             balanceBefore = transaction.balanceBefore
             balanceAfter = transaction.balanceAfter
             type = transaction.type
+            senderAccountId = transaction.senderAccountId
+            recipientAccountId = transaction.recipientAccountId
             category = transaction.category
             createdAt = transaction.createdAt
             updatedAt = transaction.updatedAt
