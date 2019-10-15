@@ -175,7 +175,8 @@ Sample request:
 ```json
 {
 	"amount": 456.66,
-	"currency": "NGN"
+	"currency": "NGN",
+	"description": "Something Small"
 }
 ```
 
@@ -203,7 +204,7 @@ Sample response:
             "sessionReference": "SESSION-76d1cd06d19a4b0b8bf88fdaa892a117}",
             "type": "DEBIT",
             "category": "BANK_TRANSFER",
-            "description": null,
+            "description": "Something Small",
             "balanceBefore": "10000.00",
             "balanceAfter": "9543.34",
             "createdAt": "2019-10-14T11:43:46",
@@ -213,7 +214,7 @@ Sample response:
 }
 ```
 
-### POST /account/:account_id/transactions
+### GET /account/:account_id/transactions
 Get account transactions.
 
 Sample Response:
@@ -241,7 +242,7 @@ Sample Response:
             "sessionReference": "SESSION-76d1cd06d19a4b0b8bf88fdaa892a117}",
             "type": "DEBIT",
             "category": "BANK_TRANSFER",
-            "description": null,
+            "description": "Something Small",
             "balanceBefore": "10000.00",
             "balanceAfter": "9543.34",
             "createdAt": "2019-10-14T11:43:46",
