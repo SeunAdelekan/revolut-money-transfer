@@ -1,5 +1,5 @@
 # Revolut Money Transfer REST API
-A RESTful API facilitating money transfers between accounts.
+A thread safe RESTful API facilitating money transfers between accounts.
 
 ## Getting Started
 Build the program via maven with the following command:
@@ -15,16 +15,16 @@ java -jar target/money-transfer-api-1.0.0-jar-with-dependencies.jar
 A postman collection for testing the API is available for download [here](https://www.getpostman.com/collections/ecbab17895ffe6dee918).
 
 ## Technologies used
-* Kotlin as implementation language
+* Kotlin as implementation language.
 * Javalin as a web API framework.
 * Jackson for JSON serialization and deserialization.
 * JUnit and Hemcrest for unit tests.
-* Unirest
+* Unirest.
 
 ## API documentation
 The following REST resources are exposed by the API:
 
-| Http method | Endpoint                                        | Sample Request Body                                           | Description                                                    |
+| Http method | Endpoint                                        | Sample Request Body                                           | Description                                        |
 |-------------|-------------------------------------------------|---------------------------------------------------|----------------------------------------------------------------|
 | POST        | /accounts                                       | { "accountName": "Account Name", "currency": "NGN" } | This resource creates a new account.                        |
 | GET         | /accounts/:account_id                           |                                                   | This resource gets the details of a given account.             |
@@ -37,6 +37,7 @@ The following REST resources are exposed by the API:
 
 ### POST /accounts
 Create account in the service.
+
 Sample request:
 ```json
 {
@@ -44,7 +45,6 @@ Sample request:
 	"currency": "GBP"
 }
 ```
-Currency should be passed in capital letters.
 
 Sample response:
 ```json
@@ -64,7 +64,7 @@ Sample response:
 ```
 
 ### POST /accounts/:accountId/deposits
-Deposit money to the given account.
+Deposit money to a given account.
 
 Sample request:
 ```json
@@ -302,6 +302,16 @@ with two different currencies the following exchange rates apply:
 * NGN 1 -> GBP 0.0022
 * GBP 1 -> NGN 456.66
 
+## Error Codes
+The following are the error codes that can be received from the server.
+
+| Server Error Code | Description                               | 
+|-------------|-------------------------------------------------|
+| 1000        | The request is being made in an unsupported HTTP content type.|
+| 1001        | This error code means an invalid request parameter is being sent to the server|
+| 1002        | The account does not have sufficient balance to perform given the transaction.|
+
+The error codes above are distinct from and do not replace HTTP status codes.
 ## Tests
 Unit and integration tests have been written to verify the correctness of the system.
 Tests can be run with the following command:
