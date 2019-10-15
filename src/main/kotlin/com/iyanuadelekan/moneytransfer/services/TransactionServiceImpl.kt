@@ -15,13 +15,12 @@ internal class TransactionServiceImpl : TransactionService {
     private val currencyService: CurrencyService = CurrencyServiceImpl()
     private val transactionRepository: TransactionRepository = TransactionRepositoryImpl()
 
+    @Throws(IllegalArgumentException::class)
     override fun processDeposit(accountId: String, transactionData: TransactionOperationData): Account {
         var account = accountService.getAccount(accountId)
         val (amount, currency) = transactionData
 
-        if (amount <= BigDecimal.ZERO) {
-            throw InvalidParameterException("Transaction amounts must be greater than 0.00")
-        }
+        require(amount > BigDecimal.ZERO) { "Transaction amounts must be greater than 0.00" }
         val convertedAmount = currencyService.getExchangeAmount(amount, currency, account.currency.name)
 
         val transaction = buildTransaction(
@@ -52,9 +51,8 @@ internal class TransactionServiceImpl : TransactionService {
             transactionData: TransactionOperationData): Pair<Account, Transaction> {
         val (amount, currency, description) = transactionData
 
-        if (amount <= BigDecimal.ZERO) {
-            throw InvalidParameterException("Transaction amounts must be greater than 0.0")
-        }
+        require(amount > BigDecimal.ZERO) { "Transaction amounts must be greater than 0.00" }
+
         val sourceAccount = accountService.getAccount(sourceAccountId)
         val sourceDebitAmount = currencyService.getExchangeAmount(amount, currency, sourceAccount.currency.name)
 
@@ -70,6 +68,7 @@ internal class TransactionServiceImpl : TransactionService {
         return debitResult
     }
 
+    @Throws(IllegalArgumentException::class)
     override fun executeDebit(
             accountId: String,
             amount: BigDecimal,
@@ -102,7 +101,7 @@ internal class TransactionServiceImpl : TransactionService {
         return Pair(debitedAccount, transaction)
     }
 
-    @Throws(InvalidParameterException::class)
+    @Throws(IllegalArgumentException::class)
     override fun executeCredit(
             accountId: String,
             amount: BigDecimal,
