@@ -27,7 +27,7 @@ java -jar target/money-transfer-api-1.0.0-jar-with-dependencies.jar
 ## API documentation
 The following REST resources are exposed by the API:
 
-| Http method | Endpoint                                        | Request                                           | Description                                                    |
+| Http method | Endpoint                                        | Sample Request Body                                           | Description                                                    |
 |-------------|-------------------------------------------------|---------------------------------------------------|----------------------------------------------------------------|
 | POST        | /accounts                                       | { "accountName": "Account Name", "currency": "NGN" } | This resource creates a new account.                        |
 | GET         | /accounts/:account_id                           |                                                   | This resource gets the details of a given account.             |
