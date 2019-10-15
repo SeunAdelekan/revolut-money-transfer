@@ -45,6 +45,21 @@ internal class TransactionServiceImpl : TransactionService {
         return account
     }
 
+    override fun withdrawFunds(accountId: String, transactionData: TransactionOperationData): Account {
+        val account = accountService.getAccount(accountId)
+        val (amount, currency) = transactionData
+
+        require(amount > BigDecimal.ZERO) { "Transaction amounts must be greater than 0.00" }
+        val convertedAmount = currencyService.getExchangeAmount(amount, currency, account.currency.name)
+
+        val debitResult = executeDebit(
+                accountId,
+                convertedAmount,generateSessionReference(),
+                TransactionCategory.ACCOUNT_WITHDRAWAL)
+
+        return debitResult.first
+    }
+
     override fun processTransfer(
             sourceAccountId: String,
             recipientAccountId: String,
@@ -62,7 +77,12 @@ internal class TransactionServiceImpl : TransactionService {
         val targetAccount = accountService.getAccount(recipientAccountId)
         val destinationCreditAmount = currencyService.getExchangeAmount(amount, currency, targetAccount.currency.name)
         val sessionReference = generateSessionReference()
-        val debitResult = executeDebit(sourceAccountId, sourceDebitAmount, sessionReference, description)
+        val debitResult = executeDebit(
+                sourceAccountId,
+                sourceDebitAmount,
+                sessionReference,
+                TransactionCategory.BANK_TRANSFER,
+                description)
         executeCredit(recipientAccountId, destinationCreditAmount, sessionReference, description)
 
         return debitResult
@@ -73,6 +93,7 @@ internal class TransactionServiceImpl : TransactionService {
             accountId: String,
             amount: BigDecimal,
             sessionReference: String,
+            transactionCategory: TransactionCategory,
             description: String?): Pair<Account, Transaction> {
         val transactionReference = generateTransactionReference()
         val transaction = buildTransaction(

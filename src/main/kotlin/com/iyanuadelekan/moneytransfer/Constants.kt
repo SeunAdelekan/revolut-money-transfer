@@ -5,7 +5,7 @@ enum class TransactionType {
 }
 
 enum class TransactionCategory {
-    ACCOUNT_FUNDING, BANK_TRANSFER,
+    ACCOUNT_FUNDING, BANK_TRANSFER, ACCOUNT_WITHDRAWAL
 }
 
 enum class RequestError(val code: String) {

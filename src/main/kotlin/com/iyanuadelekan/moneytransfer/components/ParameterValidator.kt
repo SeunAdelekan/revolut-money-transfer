@@ -55,7 +55,7 @@ class ParameterValidator {
         }
     }
 
-    fun validateFundAccountParams(ctx: Context): Pair<String, TransactionOperationData> {
+    fun validateFundActionParams(ctx: Context): Pair<String, TransactionOperationData> {
         with (ctx) {
             val accountId = pathParam<String>("account_id")
                     .check({ accountService.verifyAccountRegistered(it) },
@@ -68,7 +68,7 @@ class ParameterValidator {
         }
     }
 
-    fun validateFundTransferParams(ctx: Context): Triple<String, String, TransactionOperationData> {
+    fun validateTransferParams(ctx: Context): Triple<String, String, TransactionOperationData> {
         with (ctx) {
             val accountId = pathParam<String>("account_id")
                     .check({ accountService.verifyAccountRegistered(it) },

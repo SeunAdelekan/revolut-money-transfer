@@ -47,19 +47,24 @@ class TransactionsServiceTest : BaseServiceTest() {
     fun `Test fund deposit with valid parameters`() {
         val account = accountService.createBankAccount(
                 AccountData("current account", Currency.NGN.name))
+        val amount = BigDecimal("200.00")
+        val data = TransactionOperationData(amount, Currency.NGN.name)
+        val result = transactionService.processDeposit(account.id, data)
 
-        val data = TransactionOperationData(BigDecimal("200.00"), Currency.NGN.name)
-        transactionService.processDeposit(account.id, data)
+        with (result) {
+            assertEquals(account, this)
+            assertEquals(amount, this.balance)
+        }
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `Test fund transfer with invalid source ID`() {
+    fun `Test account transfer with invalid source ID`() {
         val data = TransactionOperationData(BigDecimal("23678.00"), Currency.NGN.name)
         transactionService.processTransfer(generateUUID(), generateUUID(), data)
     }
 
     @Test(expected = InsufficientBalanceException::class)
-    fun `Test fund transfer from source account with insufficient balance`() {
+    fun `Test account transfer from source account with insufficient balance`() {
         val account = accountService.createBankAccount(
                 AccountData("savings account", Currency.NGN.name))
 
@@ -68,7 +73,7 @@ class TransactionsServiceTest : BaseServiceTest() {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `Test fund transfer with invalid recipient id`() {
+    fun `Test account transfer with invalid recipient id`() {
         val account = accountService.createBankAccount(
                 AccountData("money bank", Currency.NGN.name))
 
@@ -80,7 +85,7 @@ class TransactionsServiceTest : BaseServiceTest() {
     }
 
     @Test
-    fun `Test fund transfer with valid parameters`() {
+    fun `Test account transfer with valid parameters`() {
         val sourceAccount = accountService.createBankAccount(
                 AccountData("source", Currency.NGN.name))
         val destinationAccount = accountService.createBankAccount(
@@ -101,6 +106,60 @@ class TransactionsServiceTest : BaseServiceTest() {
             assertEquals(amount, transferAmount)
             assertEquals(sourceAccount.balance, balanceAfter)
             assertEquals(sourceAccount.balance.plus(transferAmount), balanceBefore)
+        }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `Test fund withdrawal with invalid account ID`() {
+        val data = TransactionOperationData(BigDecimal("10000.45"), Currency.NGN.name)
+        transactionService.withdrawFunds(generateUUID(), data)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `Test fund withdrawal with amount below 0`() {
+        val account = accountService.createBankAccount(
+                AccountData("current account", Currency.NGN.name))
+
+        val data = TransactionOperationData(BigDecimal("-888"), Currency.NGN.name)
+        transactionService.withdrawFunds(account.id, data)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `Test fund withdrawal with 0`() {
+        val account = accountService.createBankAccount(
+                AccountData("current account", Currency.NGN.name))
+
+        val data = TransactionOperationData(BigDecimal("0"), Currency.NGN.name)
+        transactionService.withdrawFunds(account.id, data)
+    }
+
+    @Test(expected = InsufficientBalanceException::class)
+    fun `Test fund withdrawal with 0 balance`() {
+        val account = accountService.createBankAccount(
+                AccountData("current account", Currency.NGN.name))
+
+        val data = TransactionOperationData(BigDecimal("100.00"), Currency.NGN.name)
+        transactionService.withdrawFunds(account.id, data)
+    }
+
+    @Test
+    fun `Test fund withdrawal with valid parameters`() {
+        val account = accountService.createBankAccount(
+                AccountData("current account", Currency.NGN.name))
+
+        // deposit money into newly created account.
+        val depositAmount = BigDecimal("200.00")
+        var data = TransactionOperationData(depositAmount, Currency.NGN.name)
+        transactionService.processDeposit(account.id, data)
+
+        // withdraw funds from account
+        val withdrawalAmount = BigDecimal("100.00")
+        data = TransactionOperationData(withdrawalAmount, Currency.NGN.name)
+        val result = transactionService.withdrawFunds(account.id, data)
+
+        with (result) {
+            assertEquals(account, account)
+            assertEquals(depositAmount - withdrawalAmount, balance)
         }
     }
 }
