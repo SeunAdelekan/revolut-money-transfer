@@ -13,7 +13,7 @@
         <sl4j.version>1.7.21</sl4j.version>
         <javalin.version>3.5.0</javalin.version>
         <jackson.version>2.10.0.pr1</jackson.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <unirest.version>3.1.00</unirest.version>
         <maven.assemply.plugin.version>3.1.1</maven.assemply.plugin.version>
         <scope.test>test</scope.test>
